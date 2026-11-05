@@ -68,10 +68,11 @@ function doPost(e){
       const who=CacheService.getScriptCache().get('t:'+d.token); if(!who) return out({ok:false,error:'Session expired',auth:false});
       const fn={adminOrders:adminOrders,adminSummary:adminSummary,adminSetStatus:d=>locked(()=>setStatus(d,who)),
         adminPayment:d=>locked(()=>recordPayment(d,who)),adminAddExpense:addExpense,adminExpenses:()=>({ok:true,expenses:rows('Expenses').reverse().slice(0,200)}),
+        adminManualOrder:d=>locked(()=>manualOrder(d,who)),
         adminProducts:adminProducts,adminCreateProduct:adminCreateProduct,adminUpdateProduct:adminUpdateProduct,
         adminUpdateVariants:adminUpdateVariants,adminUploadImage:adminUploadImage}[d.action];
       const result=fn?fn(d):fail('Unknown action');
-      return out(result.ok&&['adminSetStatus','adminPayment','adminAddExpense','adminCreateProduct','adminUpdateProduct','adminUpdateVariants'].indexOf(d.action)>=0?refreshDashboardAfterWrite(result):result);
+      return out(result.ok&&['adminSetStatus','adminPayment','adminAddExpense','adminManualOrder','adminCreateProduct','adminUpdateProduct','adminUpdateVariants'].indexOf(d.action)>=0?refreshDashboardAfterWrite(result):result);
     }
     return out(fail('Unknown action'));
   }catch(err){console.error(err);return out(fail('Server error'));}
@@ -95,13 +96,17 @@ function placeOrder(d){
   if(['delivery','pickup'].indexOf(method)<0) return fail('Choose delivery or pickup');
   if(method==='delivery'&&(!d.address||!d.region)) return fail('Delivery address and region are required');
   if(!Array.isArray(d.items)||!d.items.length||d.items.length>30) return fail('Your cart is empty');
-  const vs=rows('Product_Variants'), ps=rows('Products'), lines=[]; let subtotal=0;
+  const vs=rows('Product_Variants'), ps=rows('Products'), quantities={}, lines=[]; let subtotal=0;
   for(const it of d.items){
     const v=vs.find(x=>x.variant_id===it.variantId), q=Math.floor(+it.qty);
     if(!v||!(v.active===true||v.active==='TRUE')||!(q>=1&&q<=20)) return fail('An item in your cart is no longer available');
-    const p=ps.find(x=>x.product_id===v.product_id);
-    if(+v.stock<q) return fail(p.name+' ('+v.label+') has only '+v.stock+' left');
-    lines.push({v:v,p:p,q:q}); subtotal+=q*+v.price;
+    quantities[v.variant_id]=(quantities[v.variant_id]||0)+q;
+    if(quantities[v.variant_id]>20)return fail('Choose 20 or fewer of each option');
+  }
+  for(const variantId in quantities){
+    const v=vs.find(x=>x.variant_id===variantId),p=ps.find(x=>x.product_id===v.product_id),q=quantities[variantId];
+    if(+v.stock<q)return fail(p.name+' ('+v.label+') has only '+v.stock+' left');
+    lines.push({v:v,p:p,q:q});subtotal+=q*+v.price;
   }
   let discount=0, code=String(d.discountCode||'').trim().toUpperCase(), dr=null;
   if(code){dr=rows('Discounts').find(x=>String(x.code).toUpperCase()===code);const t=new Date();
@@ -118,8 +123,12 @@ function placeOrder(d){
     setCell('Product_Variants',l.v._row,'stock',+l.v.stock-l.q);
     add('Inventory_Movements',{movement_id:uid('MOV'),variant_id:l.v.variant_id,type:'sold',qty:-l.q,order_id:orderId,created_at:now()});});
   if(dr) setCell('Discounts',dr._row,'used',(+dr.used||0)+1);
-  add('Order_History',{history_id:uid('HIS'),order_id:orderId,field:'order_status',old_value:'',new_value:'Pending',admin:'customer',created_at:now()});
+  add('Order_History',{history_id:uid('HIS'),order_id:orderId,field:'order_status',old_value:'',new_value:'Pending',admin:d.createdBy||'customer',created_at:now()});
   return {ok:true,reference:ref,total:total};
+}
+function manualOrder(d,who){
+  const notes=String(d.notes||'').trim();
+  return placeOrder(Object.assign({},d,{clientKey:'MANUAL-'+uid('KEY'),createdBy:who,notes:('WhatsApp order, recorded by '+who+(notes?': '+notes:'')).slice(0,500)}));
 }
 
 function customRequest(d){

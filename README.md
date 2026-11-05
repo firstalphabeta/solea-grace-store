@@ -16,9 +16,14 @@ When updating an existing deployment, use **Deploy > Manage deployments > Edit >
 ### Adding product photos and collections
 1. Sign in at `/admin.html`, choose **Manage products**, then **Add a product**.
 2. Enter the product name, category, description, price-option name (such as One size or Gold), price, your cost, stock quantity, and low-stock threshold. Add more options for different sizes or colours, then choose **Create product**.
-3. Select a photo from your device in that product's **Upload photo** field. JPG, PNG, WebP and GIF images up to 5 MB are supported. Run `authorizeImageUploads()` in the Apps Script editor first if Drive access has not been authorized.
+3. Use a portrait photo around **1200 × 1500 pixels (4:5 ratio)** so product cards line up neatly. Keep the product centered because the storefront crops images to fill the card. JPG or WebP is recommended; the uploader accepts JPG, PNG, WebP, or GIF up to 5 MB.
 4. Uploaded images are saved in the script owner's Drive, shared with anyone who has the link so they can appear on the public storefront, and attached to the product automatically. You can also paste an existing public image URL.
 5. Choose **New** or **Limited Edition** under **Badge / collection** to place the product in those storefront category filters. Edit product details, prices, options, or stock from the same screen.
+
+### Recording orders from WhatsApp
+1. In `/admin.html`, choose **Add WhatsApp order**.
+2. Enter the customer's name and phone number, choose delivery or pickup, and add each item and quantity. Delivery orders need an address and region.
+3. Choose **Save WhatsApp order**. The order is added as **Unpaid**, stock is reserved, and it appears in the order list. When the customer pays, choose **Record payment** on that order. Cancelling an order returns its stock.
 
 ## Host the storefront on GitHub Pages
 1. Create a GitHub repository named `solea-grace-store`. The GitHub account owner name becomes part of the site address.

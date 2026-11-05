@@ -3,7 +3,7 @@
 input,select,button{font:inherit;padding:9px;border:1px solid #CFCBC2;background:#fff;min-height:40px}button{cursor:pointer;background:#14201B;color:#fff;border:0}
 .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.k div{background:#fff;padding:12px;border:1px solid #E2DFD8}.k b{display:block;font-size:20px}
 .o{background:#fff;border:1px solid #E2DFD8;padding:12px;margin:10px 0}.o>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.err{color:#9B1C1C}small{color:#5C6660}
-.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}.product{margin:0;min-width:0}.product label{display:block;margin-top:10px}.product input,.product select,.product textarea{width:100%;margin-top:4px}.product textarea{min-height:78px}.product .preview{width:100%;height:220px;object-fit:cover;background:#f0efec;margin-top:10px}.product .status{display:block;margin-top:8px}.hint{color:#5C6660}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.variant-list{display:grid;gap:8px;margin-top:8px}.variant{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px;background:#F6F5F2;border:1px solid #E2DFD8}.variant label{margin:0;font-size:12px}.variant .check{display:flex;align-items:center;gap:6px;grid-column:span 2}.variant .check input,.check input{width:auto;margin:0}.product-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.product-head h2{font-size:20px}.section-title{margin:18px 0 6px;font-size:16px}</style></head><body><div class="w" id="app"></div>
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}.product{margin:0;min-width:0}.product label{display:block;margin-top:10px}.product input,.product select,.product textarea{width:100%;margin-top:4px}.product textarea{min-height:78px}.product .preview{width:100%;height:220px;object-fit:cover;background:#f0efec;margin-top:10px}.product .status{display:block;margin-top:8px}.hint{color:#5C6660}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.variant-list{display:grid;gap:8px;margin-top:8px}.variant{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px;background:#F6F5F2;border:1px solid #E2DFD8}.variant label{margin:0;font-size:12px}.variant .check{display:flex;align-items:center;gap:6px;grid-column:span 2}.variant .check input,.check input{width:auto;margin:0}.product-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.product-head h2{font-size:20px}.section-title{margin:18px 0 6px;font-size:16px}.manual-order{max-width:760px}.manual-order label{display:block;margin:12px 0 4px}.manual-order input,.manual-order select,.manual-order textarea{width:100%;padding:10px;border:1px solid #CFCBC2;min-height:42px}.manual-order textarea{min-height:76px}.manual-line{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;gap:8px;margin:9px 0;align-items:center}.manual-total{font-weight:600;margin:14px 0}@media(max-width:520px){.manual-line{grid-template-columns:1fr 90px}.manual-line button{grid-column:span 2}}</style></head><body><div class="w" id="app"></div>
 <script src="config.js"></script><script>
 let T=sessionStorage.t||'';const app=document.getElementById('app');
 const money=n=>'GHS '+(+n).toLocaleString('en-GH',{minimumFractionDigits:2});
@@ -13,12 +13,12 @@ function loginView(m=''){app.innerHTML='<h1>Admin sign in</h1><p class="err">'+e
  go.onclick=async()=>{const r=await api('login',{email:e.value,password:p.value});if(r.ok){T=r.token;sessionStorage.t=T;main()}else loginView(r.error)}}
 async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([api('adminSummary',{}),api('adminOrders',{})]);if(!s.ok||!o.ok)return;
  const K=[['Orders',s.orders],['Revenue (est.)',money(s.revenue)],['Cash received',money(s.cashReceived)],['Outstanding',money(s.outstanding)],['Gross profit (est.)',money(s.grossProfit)],['Expenses',money(s.expenses)],['Net profit (est.)',money(s.netProfit)],['Low stock variants',s.lowStock]];
- app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manage">Manage products</button> <button id="out">Sign out</button></p><div id="list"></div>';
+ app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manual">Add WhatsApp order</button> <button id="manage">Manage products</button> <button id="out">Sign out</button></p><div id="list"></div>';
  const draw=()=>{const q=f.value.toLowerCase();list.innerHTML=o.orders.filter(x=>(x.name+x.phone+x.reference).toLowerCase().includes(q)).map(x=>
   '<div class="o"><b>'+esc(x.reference)+'</b> · '+esc(x.name)+' · '+esc(x.phone)+' · '+money(x.total)+'<br><small>'+esc(x.items.map(i=>i.product_name+' ('+i.variant_label+') x'+i.qty).join(', '))+'</small><div>'+
   '<select data-s="'+x.order_id+'">'+o.statuses.map(t=>'<option'+(t===x.order_status?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
   '<span>'+esc(x.payment_status)+' · paid '+money(x.amount_paid)+'</span><button data-p="'+x.order_id+'">Record payment</button><button data-r="'+x.order_id+'">Record refund</button></div></div>').join('')||'<p>No orders yet.</p>'};
- draw();f.oninput=draw;manage.onclick=productsView;out.onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+ draw();f.oninput=draw;manage.onclick=productsView;manual.onclick=manualOrderView;out.onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
  csv.onclick=()=>{const H=['reference','created_at','name','phone','total','amount_paid','payment_status','order_status'];const c=[H.join(',')].concat(o.orders.map(x=>H.map(k=>'"'+String(x[k]).replace(/"/g,'""')+'"').join(',')));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c.join('\n')],{type:'text/csv'}));a.download='orders.csv';a.click()};
  list.onchange=async e=>{const id=e.target.dataset.s;if(!id)return;if(e.target.value==='Cancelled'&&!confirm('Cancel this order? Stock will be returned to inventory.')){main();return}
@@ -26,7 +26,46 @@ async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([
  list.onclick=async e=>{const id=e.target.dataset.p||e.target.dataset.r;if(!id)return;const refund=!!e.target.dataset.r;
   const a=prompt((refund?'Refund':'Payment')+' amount (GHS)');if(!a)return;const m=prompt('Method: Cash, Mobile Money, Bank Transfer or Other','Mobile Money');const ref=prompt('Reference (optional)')||'';
   if(!confirm('Record '+(refund?'refund':'payment')+' of GHS '+a+'?'))return;const r=await api('adminPayment',{orderId:id,amount:a,method:m,reference:ref,type:refund?'refund':'payment'});if(!r.ok)alert(r.error);main()}}
-const BADGES=['','New','Limited Edition','Sale','Sold out'];
+ async function manualOrderView(){
+  app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div><p>Loading available products...</p>';
+  document.getElementById('back').onclick=main;
+  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+  let result;
+  try{result=await api('adminProducts',{})}catch(e){app.innerHTML+='<p class="err">Could not load products. Check your connection and try again.</p>';return}
+  if(!result.ok){if(result.auth===false)return;app.innerHTML+='<p class="err">'+esc(result.error||'Could not load products.')+'</p>';return}
+  const products=result.products.filter(p=>p.active);
+  const choices=products.flatMap(p=>p.variants.filter(v=>v.active&&Number(v.stock)>0).map(v=>({id:v.id,label:p.name+' · '+v.label+' · '+money(v.price)+' · '+v.stock+' in stock',stock:Number(v.stock),price:Number(v.price)})));
+  const options='<option value="">Choose product / option</option>'+choices.map(v=>'<option value="'+esc(v.id)+'" data-stock="'+v.stock+'" data-price="'+v.price+'">'+esc(v.label)+'</option>').join('');
+  app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div>'+
+   (choices.length?'<form class="o manual-order" id="manual-form"><label>Customer name<input name="name" required minlength="2"></label><label>WhatsApp phone number<input name="phone" type="tel" required placeholder="+233..."></label><label>Email (optional)<input name="email" type="email"></label><label>Fulfilment<select name="method"><option value="delivery">Delivery</option><option value="pickup">Pickup</option></select></label><div id="delivery-fields"><label>Delivery address<input name="address"></label><label>Region / city<input name="region" placeholder="Accra"></label></div><h2 class="section-title">Order items</h2><div id="manual-items"></div><div class="toolbar"><button type="button" id="add-item">Add another item</button></div><label>Notes (optional)<textarea name="notes" maxlength="400" placeholder="Order details from WhatsApp"></textarea></label><p class="hint">Delivery fee is calculated from your Settings sheet. You can record the payment after saving the order.</p><p class="status" id="manual-status" aria-live="polite"></p><button type="submit">Save WhatsApp order</button></form>':'<p>No products with available stock yet. Add a product and set its stock under Manage products first.</p>');
+  document.getElementById('back').onclick=main;
+  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+  const form=document.getElementById('manual-form');if(!form)return;
+  const itemList=document.getElementById('manual-items');
+  const addItem=()=>{itemList.insertAdjacentHTML('beforeend','<div class="manual-line"><select data-item required>'+options+'</select><input data-qty type="number" min="1" max="20" value="1" required><button type="button" data-remove-item>Remove</button></div>')};
+  addItem();
+  document.getElementById('add-item').onclick=addItem;
+  itemList.onclick=e=>{if(e.target.closest('[data-remove-item]')&&itemList.children.length>1)e.target.closest('.manual-line').remove()};
+  form.elements.method.onchange=()=>{document.getElementById('delivery-fields').hidden=form.elements.method.value==='pickup'};
+  form.onsubmit=async e=>{
+   e.preventDefault();const button=form.querySelector('[type=submit]'),status=document.getElementById('manual-status');
+   const items=[...itemList.querySelectorAll('.manual-line')].map(line=>({variantId:line.querySelector('[data-item]').value,qty:line.querySelector('[data-qty]').value}));
+   for(const line of itemList.querySelectorAll('.manual-line')){
+    const option=line.querySelector('[data-item]').selectedOptions[0],qty=Number(line.querySelector('[data-qty]').value);
+    if(!option.value){status.textContent='Choose a product option for each order item.';return}
+    if(qty<1||qty>Number(option.dataset.stock)){status.textContent='Quantity exceeds available stock for '+option.textContent+'.';return}
+   }
+   button.disabled=true;status.textContent='Saving WhatsApp order...';
+   try{
+    const order=await api('adminManualOrder',{name:form.elements.name.value,phone:form.elements.phone.value,email:form.elements.email.value,method:form.elements.method.value,address:form.elements.address.value,region:form.elements.region.value,notes:form.elements.notes.value,items});
+    if(!order.ok){status.textContent=order.error||'Could not save order.';return}
+    app.innerHTML='<h1>WhatsApp order saved</h1><p>Order <strong>'+esc(order.reference)+'</strong> has been added.</p><p>Total: <strong>'+money(order.total)+'</strong> · Payment status: Unpaid</p><p>Stock has been reserved. Open the order list to record payment when the customer pays.</p><div class="toolbar"><button id="back">Back to orders</button><button id="another">Record another WhatsApp order</button></div>';
+    document.getElementById('back').onclick=main;document.getElementById('another').onclick=manualOrderView;
+   }catch(error){status.textContent='Could not save order. Check your connection and try again.'}
+   finally{button.disabled=false}
+  };
+ }
+ const BADGES=['','New','Limited Edition','Sale','Sold out'];
 function variantRow(v={},removable=false){
  return '<div class="variant" data-variant-id="'+esc(v.id||'')+'">'+
   '<label>Option name<input data-v="label" required maxlength="100" placeholder="One size, Gold, 6 mm" value="'+esc(v.label||'')+'"></label>'+
