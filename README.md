@@ -7,17 +7,18 @@ Static storefront (`web/`) + Google Apps Script backend (`apps-script/Code.gs`) 
 2. Run `setup()` once (creates all data sheets and a Dashboard with KPI cards and charts). Authorise when asked.
 3. Edit the email/password inside `createAdmin()`, run it once, then change those two lines back. Use a long unique password.
 4. Fill the **Settings** sheet: `business_name`, `whatsapp_number` (digits with country code, e.g. 233XXXXXXXXX), `delivery_fee_accra`, `delivery_fee_other`.
-5. Add rows to **Categories**, **Products** (`active` = TRUE) and **Product_Variants** (one row per size/colour, with price, cost, stock, min_stock, `active` = TRUE; `product_id` must match Products). Run `setup()` again after updating the script; it safely adds the new `badge` column to an existing Products sheet. Run `authorizeImageUploads()` once from the Apps Script editor and approve Drive access.
+5. Add products, prices, and stock from **Admin > Manage products > Add a product**. The admin screen creates product and variant rows in the Google Sheet. You can still add them directly to **Products** and **Product_Variants** if you prefer. Run `setup()` again after updating the script; it safely adds the new `badge` column to an existing Products sheet. Run `authorizeImageUploads()` once from the Apps Script editor and approve Drive access.
 6. Deploy > New deployment > Web app. Execute as: Me. Access: Anyone. Copy the URL into `web/config.js` (`API_URL`).
 7. Run locally with `npx serve web` in VS Code, or deploy `web/` to Cloudflare Pages/Netlify. Admin is at `/admin.html`.
 
 When updating an existing deployment, use **Deploy > Manage deployments > Edit > New version > Deploy** so the website can use the updated Apps Script.
 
 ### Adding product photos and collections
-1. Sign in at `/admin.html` and choose **Manage products**.
-2. Select a photo from your device in that product's **Upload a photo** field. JPG, PNG, WebP and GIF images up to 5 MB are supported. Run `authorizeImageUploads()` in the Apps Script editor first if Drive access has not been authorized.
-3. Uploaded images are saved in the script owner's Drive, shared with anyone who has the link so they can appear on the public storefront, and attached to the product automatically. You can also paste an existing public image URL and choose **Save details**.
-4. Choose **New** or **Limited Edition** under **Badge / collection** to place the product in those storefront category filters. Product categories and badges can be changed here without editing the sheet.
+1. Sign in at `/admin.html`, choose **Manage products**, then **Add a product**.
+2. Enter the product name, category, description, price-option name (such as One size or Gold), price, your cost, stock quantity, and low-stock threshold. Add more options for different sizes or colours, then choose **Create product**.
+3. Select a photo from your device in that product's **Upload photo** field. JPG, PNG, WebP and GIF images up to 5 MB are supported. Run `authorizeImageUploads()` in the Apps Script editor first if Drive access has not been authorized.
+4. Uploaded images are saved in the script owner's Drive, shared with anyone who has the link so they can appear on the public storefront, and attached to the product automatically. You can also paste an existing public image URL.
+5. Choose **New** or **Limited Edition** under **Badge / collection** to place the product in those storefront category filters. Edit product details, prices, options, or stock from the same screen.
 
 ## Host the storefront on GitHub Pages
 1. Create a GitHub repository named `solea-grace-store`. The GitHub account owner name becomes part of the site address.
@@ -43,4 +44,4 @@ GitHub Pages hosts the public storefront only; it does not run the Apps Script b
 - Back up: File > Make a copy of the Sheet weekly, or add a time-driven trigger that copies it.
 
 ## Not built yet (next phases)
-Product/variant creation, stock adjustments and returns screens, customer pages, delivery module, expense UI (backend `adminAddExpense` exists), discount UI, date-range filters in the admin UI, FAQ/policy pages, SEO files and product URLs. The Google Sheet Dashboard provides current all-time KPIs and charts; it is not a website traffic or conversion analytics tracker.
+Stock adjustment history and returns screens, customer pages, delivery module, expense UI (backend `adminAddExpense` exists), discount UI, date-range filters in the admin UI, FAQ/policy pages, SEO files and product URLs. The Google Sheet Dashboard provides current all-time KPIs and charts; it is not a website traffic or conversion analytics tracker.

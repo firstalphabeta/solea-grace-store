@@ -68,9 +68,10 @@ function doPost(e){
       const who=CacheService.getScriptCache().get('t:'+d.token); if(!who) return out({ok:false,error:'Session expired',auth:false});
       const fn={adminOrders:adminOrders,adminSummary:adminSummary,adminSetStatus:d=>locked(()=>setStatus(d,who)),
         adminPayment:d=>locked(()=>recordPayment(d,who)),adminAddExpense:addExpense,adminExpenses:()=>({ok:true,expenses:rows('Expenses').reverse().slice(0,200)}),
-        adminProducts:adminProducts,adminUpdateProduct:adminUpdateProduct,adminUploadImage:adminUploadImage}[d.action];
+        adminProducts:adminProducts,adminCreateProduct:adminCreateProduct,adminUpdateProduct:adminUpdateProduct,
+        adminUpdateVariants:adminUpdateVariants,adminUploadImage:adminUploadImage}[d.action];
       const result=fn?fn(d):fail('Unknown action');
-      return out(result.ok&&['adminSetStatus','adminPayment','adminAddExpense'].indexOf(d.action)>=0?refreshDashboardAfterWrite(result):result);
+      return out(result.ok&&['adminSetStatus','adminPayment','adminAddExpense','adminCreateProduct','adminUpdateProduct','adminUpdateVariants'].indexOf(d.action)>=0?refreshDashboardAfterWrite(result):result);
     }
     return out(fail('Unknown action'));
   }catch(err){console.error(err);return out(fail('Server error'));}
@@ -133,18 +134,72 @@ function adminOrders(){
   return {ok:true,statuses:STATUSES,orders:os.map(o=>Object.assign({},o,{items:items.filter(i=>i.order_id===o.order_id)}))};
 }
 function adminProducts(){
-  return {ok:true,products:rows('Products').map(p=>({id:p.product_id,name:p.name,category:p.category||'',badge:p.badge||'',image:p.image_url||'',active:p.active===true||p.active==='TRUE'})).sort((a,b)=>String(a.name).localeCompare(String(b.name)))};
+  const variants=rows('Product_Variants');
+  return {ok:true,products:rows('Products').map(p=>({id:p.product_id,name:p.name,category:p.category||'',description:p.description||'',badge:p.badge||'',image:p.image_url||'',active:p.active===true||p.active==='TRUE',featured:p.featured===true||p.featured==='TRUE',
+    variants:variants.filter(v=>v.product_id===p.product_id).map(v=>({id:v.variant_id,label:v.label||'',sku:v.sku||'',price:v.price,cost:v.cost,stock:v.stock,minStock:v.min_stock,active:v.active===true||v.active==='TRUE'}))})).sort((a,b)=>String(a.name).localeCompare(String(b.name)))};
 }
 function adminUpdateProduct(d){
   const p=rows('Products').find(x=>x.product_id===d.productId);
   if(!p)return fail('Product not found');
+  const name=String(d.name===undefined?p.name:d.name||'').trim(),description=String(d.description===undefined?p.description:d.description||'').trim();
   const category=String(d.category||'').trim(),badge=String(d.badge||'').trim(),image=String(d.imageUrl||'').trim();
+  if(!name||name.length>150)return fail('Product name is required and must be 150 characters or fewer');
+  if(description.length>2000)return fail('Description must be 2000 characters or fewer');
   if(category.length>100)return fail('Category must be 100 characters or fewer');
   if(['','New','Limited Edition','Sale','Sold out'].indexOf(badge)<0)return fail('Choose a valid product badge');
   if(image.length>2000||image&&!/^https?:\/\/\S+$/i.test(image))return fail('Enter a valid http or https image URL');
+  setCell('Products',p._row,'name',name);
   setCell('Products',p._row,'category',category);
+  setCell('Products',p._row,'description',description);
   setCell('Products',p._row,'badge',badge);
   setCell('Products',p._row,'image_url',image);
+  setCell('Products',p._row,'active',d.active===undefined?p.active:d.active===true);
+  setCell('Products',p._row,'featured',d.featured===undefined?p.featured:d.featured===true);
+  return {ok:true};
+}
+function catalogVariants(input){
+  if(!Array.isArray(input)||!input.length||input.length>30)return {error:'Add between 1 and 30 price/stock options'};
+  const variants=[],ids={};
+  for(const item of input){
+    const id=String(item.id||'').trim(),label=String(item.label||'').trim(),sku=String(item.sku||'').trim();
+    const price=Number(item.price),cost=Number(item.cost||0),stock=Number(item.stock),minStock=Number(item.minStock||0);
+    if(label.length<1||label.length>100)return {error:'Each option needs a name, such as One size or Gold'};
+    if(!Number.isFinite(price)||price<=0)return {error:'Each option needs a price greater than 0'};
+    if(!Number.isFinite(cost)||cost<0)return {error:'Cost cannot be negative'};
+    if(!Number.isInteger(stock)||stock<0||!Number.isInteger(minStock)||minStock<0)return {error:'Stock and low-stock threshold must be whole numbers of 0 or more'};
+    if(sku.length>100)return {error:'SKU must be 100 characters or fewer'};
+    if(id){if(ids[id])return {error:'The same product option was included more than once'};ids[id]=true;}
+    variants.push({id:id,label:label,sku:sku,price:price,cost:cost,stock:stock,minStock:minStock,active:item.active!==false});
+  }
+  return {variants:variants};
+}
+function adminCreateProduct(d){
+  const name=String(d.name||'').trim(),category=String(d.category||'').trim(),description=String(d.description||'').trim();
+  const badge=String(d.badge||'').trim(),image=String(d.imageUrl||'').trim(),prepared=catalogVariants(d.variants);
+  if(!name||name.length>150)return fail('Product name is required and must be 150 characters or fewer');
+  if(category.length>100)return fail('Category must be 100 characters or fewer');
+  if(description.length>2000)return fail('Description must be 2000 characters or fewer');
+  if(['','New','Limited Edition','Sale','Sold out'].indexOf(badge)<0)return fail('Choose a valid product badge');
+  if(image.length>2000||image&&!/^https?:\/\/\S+$/i.test(image))return fail('Enter a valid http or https image URL');
+  if(prepared.error)return fail(prepared.error);
+  const productId=uid('PRD');
+  add('Products',{product_id:productId,name:name,category:category,description:description,image_url:image,active:d.active!==false,featured:d.featured===true,created_at:now(),badge:badge});
+  prepared.variants.forEach(v=>add('Product_Variants',{variant_id:uid('VAR'),product_id:productId,label:v.label,sku:v.sku,price:v.price,cost:v.cost,stock:v.stock,min_stock:v.minStock,active:v.active}));
+  return {ok:true,productId:productId};
+}
+function adminUpdateVariants(d){
+  const p=rows('Products').find(x=>x.product_id===d.productId);
+  if(!p)return fail('Product not found');
+  const prepared=catalogVariants(d.variants);
+  if(prepared.error)return fail(prepared.error);
+  const existing=rows('Product_Variants').filter(v=>v.product_id===p.product_id),byId={};
+  existing.forEach(v=>byId[v.variant_id]=v);
+  for(const v of prepared.variants)if(v.id&&!byId[v.id])return fail('A product option was not found. Reload and try again.');
+  prepared.variants.forEach(v=>{
+    const values={label:v.label,sku:v.sku,price:v.price,cost:v.cost,stock:v.stock,min_stock:v.minStock,active:v.active};
+    if(v.id){const current=byId[v.id];Object.keys(values).forEach(key=>setCell('Product_Variants',current._row,key,values[key]));}
+    else add('Product_Variants',{variant_id:uid('VAR'),product_id:p.product_id,...values});
+  });
   return {ok:true};
 }
 function adminUploadImage(d){
