@@ -2,7 +2,8 @@
 <style>body{font:15px/1.5 system-ui,sans-serif;margin:0;background:#F6F5F2;color:#14201B}.w{max-width:1100px;margin:auto;padding:16px}
 input,select,button{font:inherit;padding:9px;border:1px solid #CFCBC2;background:#fff;min-height:40px}button{cursor:pointer;background:#14201B;color:#fff;border:0}
 .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.k div{background:#fff;padding:12px;border:1px solid #E2DFD8}.k b{display:block;font-size:20px}
-.o{background:#fff;border:1px solid #E2DFD8;padding:12px;margin:10px 0}.o>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.err{color:#9B1C1C}small{color:#5C6660}</style></head><body><div class="w" id="app"></div>
+.o{background:#fff;border:1px solid #E2DFD8;padding:12px;margin:10px 0}.o>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.err{color:#9B1C1C}small{color:#5C6660}
+.products{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:12px}.product{margin:0}.product label{display:block;margin-top:10px}.product input,.product select{width:100%;margin-top:4px}.product .preview{width:100%;height:220px;object-fit:cover;background:#f0efec;margin-top:10px}.product .status{display:block;margin-top:8px}.hint{color:#5C6660}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}</style></head><body><div class="w" id="app"></div>
 <script src="config.js"></script><script>
 let T=sessionStorage.t||'';const app=document.getElementById('app');
 const money=n=>'GHS '+(+n).toLocaleString('en-GH',{minimumFractionDigits:2});
@@ -12,12 +13,12 @@ function loginView(m=''){app.innerHTML='<h1>Admin sign in</h1><p class="err">'+e
  go.onclick=async()=>{const r=await api('login',{email:e.value,password:p.value});if(r.ok){T=r.token;sessionStorage.t=T;main()}else loginView(r.error)}}
 async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([api('adminSummary',{}),api('adminOrders',{})]);if(!s.ok||!o.ok)return;
  const K=[['Orders',s.orders],['Revenue (est.)',money(s.revenue)],['Cash received',money(s.cashReceived)],['Outstanding',money(s.outstanding)],['Gross profit (est.)',money(s.grossProfit)],['Expenses',money(s.expenses)],['Net profit (est.)',money(s.netProfit)],['Low stock variants',s.lowStock]];
- app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="out">Sign out</button></p><div id="list"></div>';
+ app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manage">Manage products</button> <button id="out">Sign out</button></p><div id="list"></div>';
  const draw=()=>{const q=f.value.toLowerCase();list.innerHTML=o.orders.filter(x=>(x.name+x.phone+x.reference).toLowerCase().includes(q)).map(x=>
   '<div class="o"><b>'+esc(x.reference)+'</b> · '+esc(x.name)+' · '+esc(x.phone)+' · '+money(x.total)+'<br><small>'+esc(x.items.map(i=>i.product_name+' ('+i.variant_label+') x'+i.qty).join(', '))+'</small><div>'+
   '<select data-s="'+x.order_id+'">'+o.statuses.map(t=>'<option'+(t===x.order_status?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
   '<span>'+esc(x.payment_status)+' · paid '+money(x.amount_paid)+'</span><button data-p="'+x.order_id+'">Record payment</button><button data-r="'+x.order_id+'">Record refund</button></div></div>').join('')||'<p>No orders yet.</p>'};
- draw();f.oninput=draw;out.onclick=()=>{sessionStorage.removeItem('t');loginView()};
+ draw();f.oninput=draw;manage.onclick=productsView;out.onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
  csv.onclick=()=>{const H=['reference','created_at','name','phone','total','amount_paid','payment_status','order_status'];const c=[H.join(',')].concat(o.orders.map(x=>H.map(k=>'"'+String(x[k]).replace(/"/g,'""')+'"').join(',')));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c.join('\n')],{type:'text/csv'}));a.download='orders.csv';a.click()};
  list.onchange=async e=>{const id=e.target.dataset.s;if(!id)return;if(e.target.value==='Cancelled'&&!confirm('Cancel this order? Stock will be returned to inventory.')){main();return}
@@ -25,5 +26,59 @@ async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([
  list.onclick=async e=>{const id=e.target.dataset.p||e.target.dataset.r;if(!id)return;const refund=!!e.target.dataset.r;
   const a=prompt((refund?'Refund':'Payment')+' amount (GHS)');if(!a)return;const m=prompt('Method: Cash, Mobile Money, Bank Transfer or Other','Mobile Money');const ref=prompt('Reference (optional)')||'';
   if(!confirm('Record '+(refund?'refund':'payment')+' of GHS '+a+'?'))return;const r=await api('adminPayment',{orderId:id,amount:a,method:m,reference:ref,type:refund?'refund':'payment'});if(!r.ok)alert(r.error);main()}}
+async function productsView(){
+ app.innerHTML='<h1>Manage products</h1><p class="hint">Add products and variants in the Products and Product_Variants sheets first. Then upload a JPG, PNG, WebP or GIF photo (up to 5 MB) here. Uploaded photos are shared publicly so customers can view them.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div><p>Loading products...</p>';
+ document.getElementById('back').onclick=main;
+ document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+ let result;
+ try{result=await api('adminProducts',{})}catch(e){app.innerHTML+='<p class="err">Could not load products. Check your connection and try again.</p>';return}
+ if(!result.ok){if(result.auth===false)return;app.innerHTML+='<p class="err">'+esc(result.error||'Could not load products.')+'</p>';return}
+ const badges=['','New','Limited Edition','Sale','Sold out'];
+ app.innerHTML='<h1>Manage products</h1><p class="hint">Add products and variants in the Products and Product_Variants sheets first. Then upload a JPG, PNG, WebP or GIF photo (up to 5 MB) here. Uploaded photos are shared publicly so customers can view them.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div>'+(result.products.length?'<div class="products" id="products">'+(result.products.map(p=>
+  '<article class="o product" data-id="'+esc(p.id)+'"><strong>'+esc(p.name)+'</strong>'+(p.active?'':' <small>(inactive)</small>')+
+  (p.image?'<img class="preview" alt="'+esc(p.name)+' photo" src="'+esc(p.image)+'">':'<div class="preview"></div>')+
+  '<label>Category<input data-category value="'+esc(p.category)+'" maxlength="100"></label>'+
+  '<label>Badge / collection<select data-badge>'+badges.map(b=>'<option value="'+esc(b)+'"'+(b===p.badge?' selected':'')+'>'+(b||'No badge')+'</option>').join('')+'</select></label>'+
+  '<label>Image URL (optional)<input data-image value="'+esc(p.image)+'" maxlength="2000" placeholder="https://..."></label>'+
+  '<label>Upload a photo<input data-upload type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label>'+
+  '<div class="toolbar"><button data-save>Save details</button></div><small class="status" aria-live="polite"></small></article>'
+ ).join(''))+'</div>':'<p>No products found. Add product rows in the Products sheet first.</p>');
+ document.getElementById('back').onclick=main;
+ document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+ const products=document.getElementById('products');
+ if(!products)return;
+ products.onchange=e=>{
+  const fileInput=e.target.closest('input[data-upload]');if(!fileInput)return;
+  const file=fileInput.files[0];if(!file)return;
+  const card=fileInput.closest('.product'),status=card.querySelector('.status');
+  if(file.size>5*1024*1024){status.textContent='Image must be 5 MB or smaller.';fileInput.value='';return}
+  status.textContent='Uploading photo...';
+  const reader=new FileReader();
+  reader.onload=async()=>{
+   try{
+    const data=String(reader.result).split(',')[1]||'';
+    const uploaded=await api('adminUploadImage',{productId:card.dataset.id,fileName:file.name,mimeType:file.type,data});
+    if(!uploaded.ok){status.textContent=uploaded.error||'Upload failed.';return}
+    card.querySelector('[data-image]').value=uploaded.image;
+    let preview=card.querySelector('.preview');
+    if(preview.tagName!=='IMG'){preview=document.createElement('img');preview.className='preview';preview.alt=card.querySelector('strong').textContent+' photo';card.insertBefore(preview,card.querySelector('label'))}
+    preview.src=uploaded.image;status.textContent='Photo uploaded and saved.';
+   }catch(error){status.textContent='Upload failed. Check your connection and try again.'}
+  };
+  reader.onerror=()=>{status.textContent='Could not read this photo.'};
+  reader.readAsDataURL(file);
+ };
+ products.onclick=async e=>{
+  const button=e.target.closest('[data-save]');if(!button)return;
+  const card=button.closest('.product'),status=card.querySelector('.status');
+  button.disabled=true;status.textContent='Saving...';
+  try{
+   const saved=await api('adminUpdateProduct',{productId:card.dataset.id,category:card.querySelector('[data-category]').value,badge:card.querySelector('[data-badge]').value,imageUrl:card.querySelector('[data-image]').value});
+   status.textContent=saved.ok?'Product details saved.':saved.error||'Could not save product details.';
+   if(saved.ok){const image=card.querySelector('[data-image]').value.trim(),preview=card.querySelector('.preview');if(image){if(preview.tagName==='IMG')preview.src=image;else{const img=document.createElement('img');img.className='preview';img.alt=card.querySelector('strong').textContent+' photo';img.src=image;card.insertBefore(img,card.querySelector('label'))}}else if(preview.tagName==='IMG')preview.remove()}
+  }catch(error){status.textContent='Could not save changes. Check your connection and try again.'}
+  finally{button.disabled=false}
+ };
+}
 if(!CFG.API_URL)app.textContent='Set API_URL in config.js first.';else T?main():loginView();
 </script></body></html>

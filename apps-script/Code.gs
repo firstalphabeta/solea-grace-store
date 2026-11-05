@@ -1,6 +1,6 @@
 /** Jewellery store backend (Google Apps Script). Bound to the Google Sheet. See README. */
 const S = {
-  Products:['product_id','name','category','description','image_url','active','featured','created_at'],
+  Products:['product_id','name','category','description','image_url','active','featured','created_at','badge'],
   Product_Variants:['variant_id','product_id','label','sku','price','cost','stock','min_stock','active'],
   Categories:['category_id','name'],
   Orders:['order_id','reference','client_key','created_at','customer_id','name','phone','email','address','region','method','subtotal','discount','delivery_fee','total','amount_paid','payment_status','order_status','delivery_status','notes','discount_code'],
@@ -20,10 +20,13 @@ const STATUSES=['Pending','Confirmed','Processing','Ready for Dispatch','Dispatc
 function setup(){ // run once from the editor
   const ss=SpreadsheetApp.getActive();
   Object.keys(S).forEach(n=>{let s=ss.getSheetByName(n)||ss.insertSheet(n);
-    if(s.getLastRow()===0){s.appendRow(S[n]);s.setFrozenRows(1);}});
+    if(s.getLastRow()===0){s.appendRow(S[n]);s.setFrozenRows(1);}
+    const headers=s.getRange(1,1,1,Math.max(s.getLastColumn(),1)).getValues()[0];
+    S[n].filter(k=>headers.indexOf(k)<0).forEach(k=>s.getRange(1,s.getLastColumn()+1).setValue(k));});
   if(sh('Settings').getLastRow()<2) [['business_name',''],['whatsapp_number',''],['delivery_fee_accra',''],['delivery_fee_other',''],['low_stock_default','3']].forEach(r=>sh('Settings').appendRow(r));
   refreshDashboard();
 }
+function authorizeImageUploads(){DriveApp.getRootFolder().getName();}
 function createAdmin(){ // edit the two values, run once, then delete them from the script
   const email='owner@example.com', password='CHANGE-ME-12chars+';
   const salt=Utilities.getUuid();
@@ -32,7 +35,11 @@ function createAdmin(){ // edit the two values, run once, then delete them from 
 const sh=n=>SpreadsheetApp.getActive().getSheetByName(n);
 function rows(n){const v=sh(n).getDataRange().getValues();const h=v.shift();return v.map((r,i)=>{const o={_row:i+2};h.forEach((k,j)=>o[k]=r[j]);return o;});}
 function add(n,o){sh(n).appendRow(S[n].map(k=>o[k]===undefined?'':o[k]));}
-function setCell(n,row,col,val){sh(n).getRange(row,S[n].indexOf(col)+1).setValue(val);}
+function setCell(n,row,col,val){
+  const sheet=sh(n),headers=sheet.getRange(1,1,1,sheet.getLastColumn()).getValues()[0],index=headers.indexOf(col);
+  if(index<0)throw new Error('Missing column '+col+' in '+n);
+  sheet.getRange(row,index+1).setValue(val);
+}
 const uid=p=>p+'-'+Utilities.getUuid().slice(0,8).toUpperCase();
 const now=()=>new Date().toISOString();
 function hash(salt,pw){return Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256,salt+pw).map(b=>('0'+(b&255).toString(16)).slice(-2)).join('');}
@@ -44,9 +51,10 @@ const digits=p=>String(p).replace(/[^\d+]/g,'');
 function doGet(){
   const st=settings(), vs=rows('Product_Variants').filter(v=>v.active===true||v.active==='TRUE');
   const products=rows('Products').filter(p=>p.active===true||p.active==='TRUE').map(p=>({
-    id:p.product_id,name:p.name,category:p.category,description:p.description,image:p.image_url,featured:p.featured===true,
+    id:p.product_id,name:p.name,category:p.category,description:p.description,image:p.image_url,badge:p.badge||'',featured:p.featured===true,
     variants:vs.filter(v=>v.product_id===p.product_id).map(v=>({id:v.variant_id,label:v.label,sku:v.sku,price:+v.price,inStock:+v.stock>0,stock:Math.min(+v.stock,10)}))}));
-  return out({ok:true,products:products,categories:rows('Categories').map(c=>c.name),
+  const categories=Array.from(new Set(rows('Categories').map(c=>String(c.name||'').trim()).concat(products.map(p=>String(p.category||'').trim())).filter(Boolean)));
+  return out({ok:true,products:products,categories:categories,
     settings:{business_name:st.business_name,whatsapp_number:st.whatsapp_number,delivery_fee_accra:Number(st.delivery_fee_accra)||0,delivery_fee_other:Number(st.delivery_fee_other)||0}});
 }
 
@@ -59,7 +67,8 @@ function doPost(e){
     if(String(d.action).indexOf('admin')===0){
       const who=CacheService.getScriptCache().get('t:'+d.token); if(!who) return out({ok:false,error:'Session expired',auth:false});
       const fn={adminOrders:adminOrders,adminSummary:adminSummary,adminSetStatus:d=>locked(()=>setStatus(d,who)),
-        adminPayment:d=>locked(()=>recordPayment(d,who)),adminAddExpense:addExpense,adminExpenses:()=>({ok:true,expenses:rows('Expenses').reverse().slice(0,200)})}[d.action];
+        adminPayment:d=>locked(()=>recordPayment(d,who)),adminAddExpense:addExpense,adminExpenses:()=>({ok:true,expenses:rows('Expenses').reverse().slice(0,200)}),
+        adminProducts:adminProducts,adminUpdateProduct:adminUpdateProduct,adminUploadImage:adminUploadImage}[d.action];
       const result=fn?fn(d):fail('Unknown action');
       return out(result.ok&&['adminSetStatus','adminPayment','adminAddExpense'].indexOf(d.action)>=0?refreshDashboardAfterWrite(result):result);
     }
@@ -122,6 +131,39 @@ function customRequest(d){
 function adminOrders(){
   const items=rows('Order_Items'), os=rows('Orders').reverse().slice(0,200);
   return {ok:true,statuses:STATUSES,orders:os.map(o=>Object.assign({},o,{items:items.filter(i=>i.order_id===o.order_id)}))};
+}
+function adminProducts(){
+  return {ok:true,products:rows('Products').map(p=>({id:p.product_id,name:p.name,category:p.category||'',badge:p.badge||'',image:p.image_url||'',active:p.active===true||p.active==='TRUE'})).sort((a,b)=>String(a.name).localeCompare(String(b.name)))};
+}
+function adminUpdateProduct(d){
+  const p=rows('Products').find(x=>x.product_id===d.productId);
+  if(!p)return fail('Product not found');
+  const category=String(d.category||'').trim(),badge=String(d.badge||'').trim(),image=String(d.imageUrl||'').trim();
+  if(category.length>100)return fail('Category must be 100 characters or fewer');
+  if(['','New','Limited Edition','Sale','Sold out'].indexOf(badge)<0)return fail('Choose a valid product badge');
+  if(image.length>2000||image&&!/^https?:\/\/\S+$/i.test(image))return fail('Enter a valid http or https image URL');
+  setCell('Products',p._row,'category',category);
+  setCell('Products',p._row,'badge',badge);
+  setCell('Products',p._row,'image_url',image);
+  return {ok:true};
+}
+function adminUploadImage(d){
+  const p=rows('Products').find(x=>x.product_id===d.productId);
+  if(!p)return fail('Product not found');
+  const mime=String(d.mimeType||'').toLowerCase(),data=String(d.data||'');
+  if(['image/jpeg','image/png','image/webp','image/gif'].indexOf(mime)<0)return fail('Choose a JPG, PNG, WebP or GIF image');
+  if(!data||data.length>Math.ceil(5*1024*1024*4/3))return fail('Image must be 5 MB or smaller');
+  try{
+    const safeName=String(d.fileName||'product-image').replace(/[^\w.-]/g,'_').slice(0,100)||'product-image';
+    const file=DriveApp.createFile(Utilities.newBlob(Utilities.base64Decode(data),mime,safeName));
+    file.setSharing(DriveApp.Access.ANYONE_WITH_LINK,DriveApp.Permission.VIEW);
+    const image='https://drive.google.com/uc?export=view&id='+file.getId();
+    setCell('Products',p._row,'image_url',image);
+    return {ok:true,image:image};
+  }catch(err){
+    console.error('Product image upload failed: '+err);
+    return fail('Image upload failed. Check Drive authorization and available storage, then try again.');
+  }
 }
 function log(orderId,field,a,b,who){add('Order_History',{history_id:uid('HIS'),order_id:orderId,field:field,old_value:a,new_value:b,admin:who,created_at:now()});}
 function setStatus(d,who){

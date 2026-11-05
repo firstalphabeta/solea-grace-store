@@ -85,7 +85,7 @@ footer{padding:36px 0;color:var(--mut);font-size:12px;border-top:1px solid var(-
 .footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:32px}
 .footer-grid h2{font:600 16px 'DM Sans',sans-serif;color:var(--ink);margin-bottom:10px}
 .footer-grid p{margin:4px 0}.footer-grid a{text-decoration:none}.footer-grid a:hover{text-decoration:underline}
-.story{margin-top:76px;background:#1d2923;color:#fff;overflow:hidden}
+.story{margin-top:76px;background:#80643f;color:#fff;overflow:hidden}
 .story-inner{max-width:1500px;margin:auto;padding:clamp(46px,7vw,100px) 5.2%;display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;gap:clamp(36px,7vw,100px)}
 .story-copy .eyebrow{color:#d8c39b;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 18px}
 .story-copy h2{font-size:clamp(38px,5vw,64px);max-width:9em}
@@ -180,8 +180,10 @@ const wa=t=>{const n=(CAT.settings.whatsapp_number||'233559336422').replace(/\D/
 function updateWhatsapp(){const link=wa('Hello Soléa Grace, I have a question about your jewellery.');$('#wa').href=link;$('#wa').style.display=link?'inline-flex':'none'}
 function save(){localStorage.setItem('cart',JSON.stringify(cart));$('#cnt').textContent=cart.reduce((s,i)=>s+i.qty,0)}
 const from=p=>Math.min(...p.variants.map(v=>v.price));
+function fillCategories(){const seen=new Set();[...CAT.categories,'New','Limited Edition'].forEach(c=>{const name=String(c||'').trim(),key=name.toLowerCase();if(name&&!seen.has(key)){seen.add(key);$('#cat').append(h('option',{value:name},name))}})}
+function inCategory(p,c){if(!c)return true;const key=String(c).trim().toLowerCase(),badge=String(p.badge||'').trim().toLowerCase(),category=String(p.category||'').trim().toLowerCase();if(key==='new')return badge==='new'||category==='new';if(key==='limited edition')return badge==='limited edition'||category==='limited edition';return p.category===c}
 function render(){const q=$('#q').value.toLowerCase(),c=$('#cat').value,s=$('#sort').value;
- let l=CAT.products.filter(p=>p.variants.length&&(!c||p.category===c)&&p.name.toLowerCase().includes(q));
+ let l=CAT.products.filter(p=>p.variants.length&&inCategory(p,c)&&p.name.toLowerCase().includes(q));
  if(s)l.sort((a,b)=>s==='lo'?from(a)-from(b):from(b)-from(a));
  const g=$('#grid');g.replaceChildren(...l.map(p=>h('button',{class:'card',onclick:()=>openProduct(p)},h('div',{class:'card-media'},h('div',{class:'ph'},p.image?h('img',{src:p.image,alt:p.name,loading:'lazy'}):'Photo coming soon'),p.badge?h('span',{class:'product-badge'},p.badge):''),h('h3',{},p.name),h('div',{class:'price'},'From '+money(from(p)),p.variants[0].compareAtPrice?h('span',{class:'old-price'},money(p.variants[0].compareAtPrice)):''))));
  const e=$('#empty');e.hidden=!!l.length;e.textContent=!CFG.API_URL?'Set API_URL in config.js to load products.':CAT.products.length?'No pieces match your search.':'No products yet. Add products and variants in the Google Sheet.'}
@@ -250,9 +252,9 @@ storyDialog.addEventListener('click',e=>{if(e.target===storyDialog)storyDialog.c
 storyDialog.addEventListener('close',()=>{storyVideo.pause();storyVideo.removeAttribute('src');storyVideo.load()});
 $('#cartBtn').onclick=openCart;$('#shade').onclick=close;['q','cat','sort'].forEach(i=>$('#'+i).addEventListener('input',render));
 $('#cf').onsubmit=async e=>{e.preventDefault();const r=await api('customRequest',Object.fromEntries(new FormData(e.target)));$('#cfe').textContent=r.ok?'Request sent. We will get back to you.':r.error;if(r.ok)e.target.reset()};
-(async()=>{save();updateWhatsapp();if(!CFG.API_URL){CAT=DEMO_CATALOG;$('#previewNote').style.display='block';CAT.categories.forEach(c=>$('#cat').append(h('option',{},c)));render();return}
- try{CAT=await (await fetch(CFG.API_URL)).json()}catch(e){}
+(async()=>{save();updateWhatsapp();if(!CFG.API_URL){CAT=DEMO_CATALOG;$('#previewNote').style.display='block';fillCategories();render();return}
+ try{CAT=await (await fetch(CFG.API_URL)).json()}catch(e){$('#empty').hidden=false;$('#empty').textContent='Could not load products. Check your internet connection and try again.';return}
  $('#brand').textContent=CAT.settings.business_name||'Soléa Grace';if(CAT.settings.business_name)document.title=CAT.settings.business_name+' | Faith-inspired artisan jewellery';
- CAT.categories.forEach(c=>$('#cat').append(h('option',{},c)));
+ fillCategories();
  updateWhatsapp();render()})();
 </script></body></html>
