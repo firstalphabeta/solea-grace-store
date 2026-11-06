@@ -1,0 +1,29 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin</title><meta name="robots" content="noindex">
+<style>body{font:15px/1.5 system-ui,sans-serif;margin:0;background:#F6F5F2;color:#14201B}.w{max-width:1100px;margin:auto;padding:16px}
+input,select,button{font:inherit;padding:9px;border:1px solid #CFCBC2;background:#fff;min-height:40px}button{cursor:pointer;background:#14201B;color:#fff;border:0}
+.k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.k div{background:#fff;padding:12px;border:1px solid #E2DFD8}.k b{display:block;font-size:20px}
+.o{background:#fff;border:1px solid #E2DFD8;padding:12px;margin:10px 0}.o>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.err{color:#9B1C1C}small{color:#5C6660}</style></head><body><div class="w" id="app"></div>
+<script src="config.js"></script><script>
+let T=sessionStorage.t||'';const app=document.getElementById('app');
+const money=n=>'GHS '+(+n).toLocaleString('en-GH',{minimumFractionDigits:2});
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+async function api(action,d){const r=await(await fetch(CFG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,token:T,...d})})).json();if(r.auth===false){sessionStorage.removeItem('t');T='';loginView('Session expired. Sign in again.')}return r}
+function loginView(m=''){app.innerHTML='<h1>Admin sign in</h1><p class="err">'+esc(m)+'</p><p><input id="e" type="email" placeholder="Email"> <input id="p" type="password" placeholder="Password"> <button id="go">Sign in</button></p>';
+ go.onclick=async()=>{const r=await api('login',{email:e.value,password:p.value});if(r.ok){T=r.token;sessionStorage.t=T;main()}else loginView(r.error)}}
+async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([api('adminSummary',{}),api('adminOrders',{})]);if(!s.ok||!o.ok)return;
+ const K=[['Orders',s.orders],['Revenue (est.)',money(s.revenue)],['Cash received',money(s.cashReceived)],['Outstanding',money(s.outstanding)],['Gross profit (est.)',money(s.grossProfit)],['Expenses',money(s.expenses)],['Net profit (est.)',money(s.netProfit)],['Low stock variants',s.lowStock]];
+ app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="out">Sign out</button></p><div id="list"></div>';
+ const draw=()=>{const q=f.value.toLowerCase();list.innerHTML=o.orders.filter(x=>(x.name+x.phone+x.reference).toLowerCase().includes(q)).map(x=>
+  '<div class="o"><b>'+esc(x.reference)+'</b> · '+esc(x.name)+' · '+esc(x.phone)+' · '+money(x.total)+'<br><small>'+esc(x.items.map(i=>i.product_name+' ('+i.variant_label+') x'+i.qty).join(', '))+'</small><div>'+
+  '<select data-s="'+x.order_id+'">'+o.statuses.map(t=>'<option'+(t===x.order_status?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
+  '<span>'+esc(x.payment_status)+' · paid '+money(x.amount_paid)+'</span><button data-p="'+x.order_id+'">Record payment</button><button data-r="'+x.order_id+'">Record refund</button></div></div>').join('')||'<p>No orders yet.</p>'};
+ draw();f.oninput=draw;out.onclick=()=>{sessionStorage.removeItem('t');loginView()};
+ csv.onclick=()=>{const H=['reference','created_at','name','phone','total','amount_paid','payment_status','order_status'];const c=[H.join(',')].concat(o.orders.map(x=>H.map(k=>'"'+String(x[k]).replace(/"/g,'""')+'"').join(',')));
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c.join('\n')],{type:'text/csv'}));a.download='orders.csv';a.click()};
+ list.onchange=async e=>{const id=e.target.dataset.s;if(!id)return;if(e.target.value==='Cancelled'&&!confirm('Cancel this order? Stock will be returned to inventory.')){main();return}
+  const r=await api('adminSetStatus',{orderId:id,status:e.target.value});if(!r.ok)alert(r.error);main()};
+ list.onclick=async e=>{const id=e.target.dataset.p||e.target.dataset.r;if(!id)return;const refund=!!e.target.dataset.r;
+  const a=prompt((refund?'Refund':'Payment')+' amount (GHS)');if(!a)return;const m=prompt('Method: Cash, Mobile Money, Bank Transfer or Other','Mobile Money');const ref=prompt('Reference (optional)')||'';
+  if(!confirm('Record '+(refund?'refund':'payment')+' of GHS '+a+'?'))return;const r=await api('adminPayment',{orderId:id,amount:a,method:m,reference:ref,type:refund?'refund':'payment'});if(!r.ok)alert(r.error);main()}}
+if(!CFG.API_URL)app.textContent='Set API_URL in config.js first.';else T?main():loginView();
+</script></body></html>

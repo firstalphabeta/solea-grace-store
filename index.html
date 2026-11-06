@@ -1,0 +1,258 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Soléa Grace | Faith-inspired artisan jewellery</title>
+<meta name="description" content="Discover artisan-made, Christ-inspired jewellery by Soléa Grace. Meaningful earrings, bracelets, necklaces and custom pieces.">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=Playfair+Display:wght@500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#171713;--bg:#fff;--brass:#b29668;--line:#e9e7e2;--mut:#77766f;--w:#fff}
+*{box-sizing:border-box}html{scroll-behavior:smooth;overflow-x:clip}body{margin:0;overflow-x:clip;background:var(--bg);color:var(--ink);font:14px/1.6 'DM Sans',system-ui,sans-serif}
+h1,h2,h3{font-family:'Playfair Display',Georgia,serif;font-weight:500;line-height:1.1;margin:0}
+a{color:inherit}button,input,select,textarea{font:inherit}
+.wrap{max-width:1500px;margin:auto;padding:0 5.2%}
+.announcement{height:32px;background:var(--ink);color:#fff;text-align:center;font-size:10px;letter-spacing:.13em;text-transform:uppercase;display:grid;place-items:center}
+header{border-bottom:1px solid var(--line);position:sticky;top:0;background:var(--bg);z-index:5}
+header .wrap{display:flex;justify-content:space-between;align-items:center;height:76px;position:relative}
+.brand{font:600 27px 'Playfair Display',serif;letter-spacing:.05em;text-decoration:none}
+.menu-toggle{width:44px;height:44px;display:grid;align-content:center;gap:5px;border:0;background:transparent;cursor:pointer;padding:10px}
+.menu-toggle span{height:1px;width:23px;background:var(--ink);display:block;transition:transform .2s,opacity .2s}
+.menu-toggle[aria-expanded=true] span:first-child{transform:translateY(6px) rotate(45deg)}
+.menu-toggle[aria-expanded=true] span:nth-child(2){opacity:0}
+.menu-toggle[aria-expanded=true] span:last-child{transform:translateY(-6px) rotate(-45deg)}
+.nav{display:none;position:absolute;z-index:8;top:calc(100% + 1px);left:5.2%;width:min(330px,89vw);padding:10px 0;background:#fff;box-shadow:0 14px 34px #0002;border:1px solid var(--line)}
+.nav.open{display:flex;flex-direction:column;gap:0}
+.nav a{text-decoration:none;font-size:12px;letter-spacing:.08em;text-transform:uppercase;padding:14px 22px}
+.nav a:hover{background:#f5f3ef}
+.menu-shade{position:fixed;inset:0;z-index:4;background:#17171312;display:none}
+.menu-shade.open{display:block}
+.menu-toggle,.brand,.header-bag{position:relative;z-index:9}
+.btn{background:var(--ink);color:var(--w);border:0;padding:13px 24px;cursor:pointer;min-height:44px;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;font-size:12px;letter-spacing:.1em;text-transform:uppercase}
+.btn.alt{background:none;color:var(--ink);border:1px solid var(--ink)}.btn:disabled{opacity:.5}
+.hero{max-width:none;padding:0;min-height:min(67vw,650px);height:590px;position:relative;display:flex;align-items:center;background:#777 url('https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=2200&q=85') center 43%/cover no-repeat;color:#fff}
+.hero:before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(13,15,12,.62),rgba(13,15,12,.22) 56%,rgba(13,15,12,.02))}
+.hero-inner{position:relative;width:min(1500px,100%);margin:auto;padding:40px 5.2%}
+.hero .eyebrow{font-size:11px;letter-spacing:.22em;text-transform:uppercase;margin:0 0 18px}
+.hero h1{font-size:clamp(46px,7vw,88px);max-width:8em;letter-spacing:-.03em}.hero p{max-width:390px;color:#f2f0eb;margin:20px 0 28px;font-size:15px}
+.hero .btn{background:#fff;color:var(--ink)}.hero .btn.alt{color:#fff;border-color:#fff;background:transparent}
+.preview-note{display:none;background:#f7f5f0;padding:10px 18px;text-align:center;color:var(--mut);font-size:11px;letter-spacing:.04em}
+.carousel-section{padding:68px 0 12px}
+.carousel-head{display:flex;align-items:end;justify-content:space-between;margin-bottom:22px}
+.carousel-head h2{font-size:clamp(30px,4vw,42px)}
+.carousel-head .eyebrow{font-size:15px;letter-spacing:.1em;color:var(--brass);margin:0 0 8px}
+.carousel-controls{display:flex;align-items:center;gap:8px}
+.carousel-control{width:44px;height:44px;border:1px solid var(--line);background:#fff;cursor:pointer;font-size:20px}
+.carousel-control:hover{background:#f4f2ee}
+.carousel-control.pause{width:auto;padding:0 12px;font-size:11px;letter-spacing:.04em}
+.carousel{position:relative;min-height:430px}
+.carousel-slide{position:absolute;inset:0 auto auto 0;width:calc(100% - 64px);display:grid;grid-template-columns:1.1fr .9fr;min-height:390px;background:#f4f2ee;opacity:.34;transform:translate(58px,16px) scale(.94);transform-origin:center left;z-index:1;pointer-events:none;box-shadow:0 12px 34px #18171312;transition:opacity .72s ease,transform .78s cubic-bezier(.2,.72,.2,1),box-shadow .78s ease}
+.carousel-slide[data-stack="1"]{opacity:.62;transform:translate(30px,8px) scale(.975);z-index:2;box-shadow:0 14px 36px #18171318}
+.carousel-slide.active{opacity:1;transform:translate(0,0) scale(1);z-index:3;pointer-events:auto;box-shadow:0 18px 48px #18171320}
+.carousel-slide img{width:100%;height:100%;min-height:390px;max-height:490px;object-fit:cover}
+.carousel-copy{align-self:center;padding:clamp(28px,6vw,78px)}
+.carousel-copy .eyebrow{font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:var(--mut);margin:0 0 14px}
+.carousel-copy h3{font-size:clamp(28px,4vw,48px)}
+.carousel-copy p{color:var(--mut);max-width:380px;margin:16px 0 24px}
+.carousel-dots{display:flex;justify-content:center;gap:10px;padding:18px 0}
+.carousel-dot{width:9px;height:9px;border:0;border-radius:50%;background:#d4d1cb;padding:0;cursor:pointer}
+.carousel-dot[aria-current=true]{background:var(--ink);outline:2px solid var(--ink);outline-offset:3px}
+.shop{padding-top:62px}
+.section-heading{display:flex;align-items:end;justify-content:space-between;margin-bottom:24px}
+.section-heading h2{font-size:clamp(30px,4vw,42px)}
+.section-heading a{font-size:11px;letter-spacing:.1em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid var(--ink);padding-bottom:4px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:0 0 24px}
+.bar input,.bar select,.f input,.f select,.f textarea{padding:11px;border:1px solid var(--line);background:var(--w);min-height:44px;width:100%}
+.bar input{flex:1;min-width:180px;width:auto}.bar select{width:auto;min-width:160px}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:34px 18px}
+.card{cursor:pointer;background:none;border:0;text-align:left;padding:0;color:inherit;min-width:0}
+.card-media{aspect-ratio:4/5;position:relative;background:#f0efec;overflow:hidden}
+.ph{width:100%;height:100%;aspect-ratio:auto;background:#f0efec;display:grid;place-items:center;color:var(--mut);font-size:13px;overflow:hidden}
+.ph img{width:100%;height:100%;object-fit:cover}
+.card:hover .ph img{transform:scale(1.035)}.ph img{transition:transform .35s}
+.product-badge{position:absolute;top:10px;left:10px;padding:5px 9px;background:#fff;color:var(--ink);font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+.card h3{font:500 15px 'DM Sans',sans-serif;margin-top:12px}.price{color:var(--mut);font-size:13px;margin-top:3px}.old-price{margin-left:7px;text-decoration:line-through;color:#9b9992}
+.empty{padding:40px 0;color:var(--mut)}
+.panel{position:fixed;inset:0 0 0 auto;width:min(440px,100%);background:var(--w);z-index:20;padding:24px;overflow:auto;transform:translateX(100%);transition:transform .25s}
+.panel.open{transform:none}.shade{position:fixed;inset:0;background:#0006;z-index:10;display:none}.shade.open{display:block}
+.row{display:flex;justify-content:space-between;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.f label{display:block;margin:12px 0 4px;font-size:14px;color:var(--mut)}
+.opts{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.opt{border:1px solid var(--line);background:var(--w);padding:8px 14px;cursor:pointer;min-height:40px}
+.opt[aria-pressed=true]{border-color:var(--ink);background:var(--ink);color:var(--w)}.opt:disabled{text-decoration:line-through;opacity:.45;cursor:not-allowed}
+.err{color:#9B1C1C;margin:10px 0}.wa{position:fixed;right:20px;bottom:20px;z-index:8;background:#18764b;color:#fff;padding:13px 18px;text-decoration:none;display:inline-flex;align-items:center;gap:9px;border-radius:999px;box-shadow:0 5px 20px #0003;font-size:13px;font-weight:600;transition:transform .2s,background .2s}.wa:hover{background:#11613d;transform:translateY(-2px)}.wa svg{width:20px;height:20px;fill:currentColor}
+section.custom{background:#f4f2ee;color:var(--ink);padding:70px 0;margin-top:80px}section.custom .wrap{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:start}section.custom h2{font-size:42px}section.custom p{color:var(--mut);max-width:380px}section.custom .f label{color:var(--mut)}
+footer{padding:36px 0;color:var(--mut);font-size:12px;border-top:1px solid var(--line);margin-top:60px}
+.footer-grid{display:grid;grid-template-columns:1.2fr 1fr 1fr;gap:32px}
+.footer-grid h2{font:600 16px 'DM Sans',sans-serif;color:var(--ink);margin-bottom:10px}
+.footer-grid p{margin:4px 0}.footer-grid a{text-decoration:none}.footer-grid a:hover{text-decoration:underline}
+.story{margin-top:76px;background:#1d2923;color:#fff;overflow:hidden}
+.story-inner{max-width:1500px;margin:auto;padding:clamp(46px,7vw,100px) 5.2%;display:grid;grid-template-columns:.9fr 1.1fr;align-items:center;gap:clamp(36px,7vw,100px)}
+.story-copy .eyebrow{color:#d8c39b;font-size:11px;letter-spacing:.2em;text-transform:uppercase;margin:0 0 18px}
+.story-copy h2{font-size:clamp(38px,5vw,64px);max-width:9em}
+.story-copy>p:not(.eyebrow){color:#d6d9d5;max-width:470px;margin:22px 0 28px;font-size:15px;line-height:1.9}
+.story-link{color:#f0dfc0;font-size:11px;letter-spacing:.12em;text-transform:uppercase;text-decoration:none;border-bottom:1px solid #f0dfc0;padding-bottom:6px}
+.story-film{position:relative;width:100%;min-width:0;min-height:390px;aspect-ratio:1.25;background:#41443e url('https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1400&q=85') center 43%/cover}
+.story-film:after{content:"";position:absolute;inset:0;background:linear-gradient(0deg,#1119,transparent 58%)}
+.story-film-caption{position:absolute;z-index:1;left:26px;bottom:22px;color:#fff}
+.story-film-caption span{display:block;font-size:10px;letter-spacing:.16em;text-transform:uppercase}
+.story-film-caption strong{display:block;margin-top:5px;font:500 24px 'Playfair Display',serif}
+.story-play{position:absolute;z-index:2;left:50%;top:50%;transform:translate(-50%,-50%);width:68px;height:68px;border:1px solid #fff9;border-radius:50%;display:grid;place-items:center;background:#fff2;color:#fff;cursor:pointer;transition:background .2s,transform .2s}
+.story-play:hover{background:#ffffff45;transform:translate(-50%,-50%) scale(1.06)}
+.story-play svg{width:19px;height:19px;fill:currentColor;margin-left:3px}
+.story-dialog{border:0;padding:0;width:min(760px,calc(100% - 32px));max-width:none;background:#1d2923;color:#fff;box-shadow:0 20px 70px #0007}
+.story-dialog::backdrop{background:#000b}
+.story-dialog-inner{padding:clamp(22px,5vw,44px)}
+.story-dialog-head{display:flex;justify-content:space-between;align-items:center;gap:20px;margin-bottom:20px}
+.story-dialog-head h2{font-size:clamp(25px,4vw,36px)}
+.story-dialog-close{width:44px;height:44px;border:1px solid #ffffff55;background:transparent;color:#fff;font-size:24px;cursor:pointer}
+.story-video{width:100%;max-height:62vh;background:#101410}
+.story-placeholder{aspect-ratio:16/9;background:#3d423c url('https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1200&q=80') center/cover;display:grid;place-items:center;text-align:center;padding:24px}
+.story-placeholder p{max-width:410px;margin:0;color:#fff;background:#101410ad;padding:18px 22px;line-height:1.7}
+.reasons{max-width:1500px;margin:0 auto;padding:76px 5.2% 16px}
+.reasons h2{font-size:clamp(30px,4vw,42px)}
+.reason-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:30px;margin-top:26px}
+.reason-grid article{padding:24px 22px;border-top:1px solid var(--line);background:#faf9f7}
+.reason-grid h3{font:600 15px 'DM Sans',sans-serif;margin-bottom:8px}
+.reason-grid p{margin:0;color:var(--mut)}
+.contact-links{display:grid;gap:12px;margin-top:12px}
+.contact-link{display:inline-flex;align-items:center;gap:11px;width:max-content;max-width:100%;text-decoration:none;color:var(--ink)}
+.contact-link:hover span{text-decoration:underline;text-underline-offset:3px}
+.contact-icon{width:36px;height:36px;flex:0 0 36px;border:1px solid var(--line);border-radius:50%;display:grid;place-items:center;color:var(--ink)}
+.contact-icon svg{width:17px;height:17px;fill:currentColor}
+:root{--carousel-duration:1.15s}
+:focus-visible{outline:3px solid var(--brass);outline-offset:2px}
+@media(max-width:760px){header .wrap{height:64px}.grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:26px 12px}.hero{height:520px;min-height:0;background-position:58% center}.hero-inner{padding:32px 6%}.hero h1{font-size:58px}.shop{padding-top:42px}.carousel-section{padding-top:48px}.carousel{min-height:585px}.carousel-slide{width:calc(100% - 36px);grid-template-columns:1fr;min-height:540px}.carousel-slide[data-stack="1"]{transform:translate(19px,8px) scale(.975)}.carousel-slide:not(.active):not([data-stack="1"]){transform:translate(36px,16px) scale(.95)}.carousel-slide img{height:270px;min-height:270px;max-height:270px}.carousel-copy{padding:24px}.carousel-copy p{margin:12px 0 18px}.story{margin-top:48px}.story-inner{grid-template-columns:1fr;gap:30px;padding:52px 6%}.story-copy h2{max-width:12em}.story-film{min-height:300px;aspect-ratio:1.4}.reasons{padding:54px 6% 12px}.reason-grid{grid-template-columns:1fr;gap:12px}section.custom .wrap{grid-template-columns:1fr;gap:20px}.footer-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.wrap{padding-left:18px;padding-right:18px}.announcement{font-size:9px}.brand{font-size:22px}.header-bag{padding:10px 12px;min-height:40px;font-size:10px}.hero{height:480px}.hero h1{font-size:49px}.hero p{font-size:14px}.hero .btn{padding:12px 14px;font-size:10px}.bar input{flex-basis:100%}.bar select{flex:1;min-width:0}.section-heading h2{font-size:30px}.section-heading a{font-size:9px}.card h3{font-size:13px}.footer-grid{grid-template-columns:1fr}.wa{right:12px;bottom:12px;padding:12px 15px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style></head><body>
+<div class="announcement">Artisan-made · Christ-inspired · Made with grace</div>
+<header><div class="wrap"><button class="menu-toggle" id="menuToggle" type="button" aria-label="Open menu" aria-expanded="false" aria-controls="mainNav"><span></span><span></span><span></span></button><a class="brand" href="#" id="brand">Soléa Grace</a><nav class="nav" id="mainNav" aria-label="Main navigation"><a href="#shop">Shop all</a><a href="#shop">Earrings</a><a href="#custom">Build charm jewellery</a><a href="#about">About</a><a href="#contact">Contact</a></nav><button class="btn alt header-bag" id="cartBtn">Bag (<span id="cnt">0</span>)</button></div></header>
+<div class="menu-shade" id="menuShade" aria-hidden="true"></div>
+<main>
+<section class="hero"><div class="hero-inner"><p class="eyebrow">Jewellery with meaning</p><h1>Faith, artistry & grace</h1><p>Discover artisan-made, Christ-inspired jewellery, handcrafted with creativity and made to bring meaning to every day.</p><a class="btn" href="#shop">Shop the collection</a> <a class="btn alt" href="#custom">Create a custom piece</a></div></section>
+<div class="preview-note" id="previewNote">Sample storefront preview — product photos, prices and stock are examples.</div>
+<section class="wrap carousel-section" aria-label="Featured collections">
+ <div class="carousel-head"><div><p class="eyebrow">A little inspiration</p><h2>Find a piece that speaks to you</h2></div><div class="carousel-controls"><button class="carousel-control pause" id="slidePause" type="button" aria-label="Pause automatic slides">Pause</button><button class="carousel-control" id="slidePrev" type="button" aria-label="Previous featured collection">‹</button><button class="carousel-control" id="slideNext" type="button" aria-label="Next featured collection">›</button></div></div>
+ <div class="carousel" aria-roledescription="carousel" aria-label="Featured jewellery collections">
+  <article class="carousel-slide active" aria-roledescription="slide" aria-label="1 of 3"><img src="https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=1200&q=80" alt="Delicate artisan necklace worn as an everyday piece" loading="lazy"><div class="carousel-copy"><p class="eyebrow">The everyday collection</p><h3>Little reminders of what matters</h3><p>Thoughtful, artisan-made jewellery with faith and meaning woven into every design.</p><a class="btn alt" href="#shop">Discover the collection</a></div></article>
+  <article class="carousel-slide" aria-roledescription="slide" aria-label="2 of 3"><img src="https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=1200&q=80" alt="A collection of elegant earrings and jewellery" loading="lazy"><div class="carousel-copy"><p class="eyebrow">Made to celebrate</p><h3>Colour, joy & a touch of grace</h3><p>Find a special gift or choose a bright new favourite to make your own.</p><a class="btn alt" href="#shop">Shop new favourites</a></div></article>
+  <article class="carousel-slide" aria-roledescription="slide" aria-label="3 of 3"><img src="https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=1200&q=80" alt="Handcrafted gold-tone jewellery arranged together" loading="lazy"><div class="carousel-copy"><p class="eyebrow">Your idea, lovingly made</p><h3>A custom piece, just for you</h3><p>Dreaming of a unique colour, charm or combination? Let’s make something meaningful.</p><a class="btn alt" href="#custom">Create a custom piece</a></div></article>
+ </div>
+ <div class="carousel-dots" role="group" aria-label="Choose a featured collection"><button class="carousel-dot" type="button" aria-label="Show collection 1" aria-current="true"></button><button class="carousel-dot" type="button" aria-label="Show collection 2" aria-current="false"></button><button class="carousel-dot" type="button" aria-label="Show collection 3" aria-current="false"></button></div>
+</section>
+<div class="wrap shop" id="shop"><div class="section-heading"><h2>Shop all jewellery</h2><a href="#grid">Browse the collection&nbsp; →</a></div><div class="bar"><input id="q" type="search" placeholder="Search jewellery" aria-label="Search"><select id="cat" aria-label="Category"><option value="">All categories</option></select><select id="sort" aria-label="Sort"><option value="">Featured</option><option value="lo">Price: low to high</option><option value="hi">Price: high to low</option></select></div><div class="grid" id="grid"></div><div class="empty" id="empty" hidden></div></div>
+<section class="story" id="about"><div class="story-inner"><div class="story-copy"><p class="eyebrow">The heart of Soléa Grace</p><h2>More than jewellery. A little reminder of grace.</h2><p>Every piece begins with a story. At Soléa Grace, we bring faith, creativity and artisan craftsmanship together to create jewellery that feels personal, meaningful and made to be treasured.</p><a class="story-link" href="#why">Discover what makes us different&nbsp; →</a></div><div class="story-film" role="img" aria-label="Jewellery detail, representing the craft behind Soléa Grace"><button class="story-play" id="storyPlay" type="button" aria-label="Preview the Soléa Grace brand video"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></button><div class="story-film-caption"><span>A glimpse into our world</span><strong>Faith in every detail</strong></div></div></div></section>
+<section class="wrap reasons" id="why"><h2>Why choose Soléa Grace?</h2><div class="reason-grid"><article><h3>Artistic excellence</h3><p>Each artisan-made piece is crafted with creativity and devotion to bring beauty and spiritual significance.</p></article><article><h3>Grace-inspired designs</h3><p>Discover the symbolism and inspiration behind our faith-inspired jewellery.</p></article><article><h3>Variety, made personal</h3><p>Explore a variety of designs, colours and styles. Custom orders are welcome.</p></article></div></section>
+<section class="custom" id="custom"><div class="wrap"><div><p class="eyebrow">Made with you in mind</p><h2>Make it personal</h2><p>From earrings and bracelets to necklaces, discover a style and colour that feels like you. Custom orders are welcome; share your idea and we’ll get back to you with a quote before anything is made.</p></div>
+<form class="f" id="cf" style="max-width:520px"><label>Name<input name="name" required></label><label>Phone<input name="phone" type="tel" required></label><label>Email<input name="email" type="email"></label><label>Type of piece<input name="type" placeholder="Ring, necklace..."></label><label>Material<input name="material"></label><label>Colour<input name="colour"></label><label>Size<input name="size"></label><label>Budget (GHS)<input name="budget"></label><label>Your idea<textarea name="description" rows="4" required></textarea></label><div class="err" id="cfe"></div><button class="btn" style="background:var(--w);color:var(--ink)">Send request</button></form></div></section>
+</main>
+<footer id="contact"><div class="wrap footer-grid"><div><h2>Soléa Grace</h2><p>Artisan-made, Christ-inspired jewellery, handcrafted with faith and creativity.</p><div class="contact-links" aria-label="Social media"><a class="contact-link" href="https://www.instagram.com/solea_grace_gh/" target="_blank" rel="noopener"><span class="contact-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2.2A2.8 2.8 0 0 0 4.2 7v10A2.8 2.8 0 0 0 7 19.8h10a2.8 2.8 0 0 0 2.8-2.8V7A2.8 2.8 0 0 0 17 4.2H7Zm5 3.1a4.7 4.7 0 1 1 0 9.4 4.7 4.7 0 0 1 0-9.4Zm0 2.2a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Zm5.1-3.1a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z"/></svg></span><span>@solea_grace_gh</span></a><a class="contact-link" href="https://wa.me/233559336422" target="_blank" rel="noopener"><span class="contact-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.83 11.83 0 0 0 12.09 0C5.55 0 .23 5.32.23 11.86c0 2.09.55 4.13 1.59 5.93L.13 24l6.36-1.67a11.85 11.85 0 0 0 5.59 1.42h.01c6.54 0 11.86-5.32 11.86-11.86 0-3.17-1.23-6.15-3.43-8.41ZM12.09 21.7a9.83 9.83 0 0 1-5.01-1.37l-.36-.21-3.77.99 1.01-3.67-.24-.38a9.81 9.81 0 1 1 8.37 4.64Zm5.39-7.35c-.3-.15-1.77-.87-2.05-.97-.28-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.51-1.78-1.69-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35Z"/></svg></span><span>Chat with us on WhatsApp</span></a></div></div><div><h2>Get in touch</h2><div class="contact-links" aria-label="Contact details"><a class="contact-link" href="tel:+233559336422"><span class="contact-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6.62 10.79a15.05 15.05 0 0 0 6.59 6.59l2.2-2.2a1 1 0 0 1 1.02-.24 11.36 11.36 0 0 0 3.57.57 1 1 0 0 1 1 1V20a1 1 0 0 1-1 1A17 17 0 0 1 3 4a1 1 0 0 1 1-1h3.5a1 1 0 0 1 1 1 11.36 11.36 0 0 0 .57 3.57 1 1 0 0 1-.25 1.02l-2.2 2.2Z"/></svg></span><span>+233 55 933 64 22</span></a><a class="contact-link" href="mailto:solea4ever@gmail.com"><span class="contact-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 4-8 5-8-5V6l8 5 8-5Z"/></svg></span><span>solea4ever@gmail.com</span></a><p>1 Fayza Plaza, Oyarifa, Accra, Ghana</p></div></div><div><h2>Stay connected</h2><p>Discover new arrivals, limited editions and meaningful designs from Soléa Grace.</p><a href="#shop">Shop the collection&nbsp; →</a></div></div></footer>
+<a class="wa" id="wa" target="_blank" rel="noopener" aria-label="Chat with Soléa Grace on WhatsApp"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.52 3.48A11.83 11.83 0 0 0 12.09 0C5.55 0 .23 5.32.23 11.86c0 2.09.55 4.13 1.59 5.93L.13 24l6.36-1.67a11.85 11.85 0 0 0 5.59 1.42h.01c6.54 0 11.86-5.32 11.86-11.86 0-3.17-1.23-6.15-3.43-8.41ZM12.09 21.7a9.83 9.83 0 0 1-5.01-1.37l-.36-.21-3.77.99 1.01-3.67-.24-.38a9.81 9.81 0 1 1 8.37 4.64Zm5.39-7.35c-.3-.15-1.77-.87-2.05-.97-.28-.1-.47-.15-.67.15-.2.3-.77.97-.94 1.17-.17.2-.35.22-.65.07-.3-.15-1.27-.47-2.42-1.5-.9-.8-1.51-1.78-1.69-2.08-.17-.3-.02-.46.13-.61.13-.13.3-.35.45-.52.15-.17.2-.3.3-.5.1-.2.05-.37-.03-.52-.07-.15-.67-1.62-.92-2.22-.24-.58-.49-.5-.67-.51h-.57c-.2 0-.52.07-.8.37-.27.3-1.04 1.02-1.04 2.49s1.07 2.89 1.22 3.09c.15.2 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.72.23 1.37.2 1.88.12.57-.08 1.77-.72 2.02-1.42.25-.7.25-1.3.17-1.42-.07-.13-.27-.2-.57-.35Z"/></svg><span>WhatsApp us</span></a>
+<dialog class="story-dialog" id="storyDialog" aria-labelledby="storyDialogTitle"><div class="story-dialog-inner"><div class="story-dialog-head"><h2 id="storyDialogTitle">A glimpse into our world</h2><button class="story-dialog-close" id="storyDialogClose" type="button" aria-label="Close video preview">×</button></div><div class="story-placeholder" id="storyPlaceholder"><p>This is where your brand film will play. A short video of your pieces being made, styled or wrapped would bring this story to life.</p></div><video class="story-video" id="storyVideo" controls playsinline hidden></video></div></dialog>
+<div class="shade" id="shade"></div><aside class="panel" id="panel" aria-live="polite"></aside>
+<script src="config.js"></script>
+<script>
+const $=s=>document.querySelector(s);
+const BRAND_VIDEO_URL='';
+const DEMO_CATALOG={settings:{business_name:'Soléa Grace',whatsapp_number:'233559336422'},categories:['Earrings','Necklaces','Bracelets','Sets','Charms'],products:[
+ {id:'demo-1',name:'A Drop of Grace — Purple Blue',category:'Earrings',description:'A graceful pair of artisan-made drops in rich purple and blue, designed to add colour and meaning to your day.',image:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',badge:'Sale',featured:true,variants:[{id:'demo-v1',label:'One size',price:100,compareAtPrice:150,inStock:true,stock:8}]},
+ {id:'demo-2',name:'Mosaic Drops',category:'Earrings',description:'Colourful mosaic-inspired statement earrings with a light, easy-to-wear feel.',image:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',badge:'New',featured:true,variants:[{id:'demo-v2',label:'One size',price:90,inStock:true,stock:6}]},
+ {id:'demo-3',name:'Prism Drops',category:'Earrings',description:'A joyful geometric design that catches the light from every angle.',image:'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80',badge:'New',featured:true,variants:[{id:'demo-v3',label:'One size',price:50,inStock:true,stock:10}]},
+ {id:'demo-4',name:'The Eden Drops',category:'Earrings',description:'Inspired by the beauty of creation, these elegant drops bring a soft natural touch.',image:'https://images.unsplash.com/photo-1630019852942-f89202989a59?auto=format&fit=crop&w=800&q=80',badge:'New',featured:true,variants:[{id:'demo-v4',label:'One size',price:70,inStock:true,stock:7}]},
+ {id:'demo-5',name:'Rainbow Reverie',category:'Bracelets',description:'A colourful bracelet made for bright days and joyful reminders.',image:'https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=80',featured:true,variants:[{id:'demo-v5',label:'Adjustable',price:60,inStock:true,stock:5}]},
+ {id:'demo-6',name:'Centre of My Joy',category:'Necklaces',description:'A meaningful pendant celebrating joy, hope and the things that matter most.',image:'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',badge:'Sale',featured:true,variants:[{id:'demo-v6',label:'Gold tone',price:200,compareAtPrice:220,inStock:true,stock:4}]},
+ {id:'demo-7',name:'Cherished Heart Set',category:'Sets',description:'A thoughtful matching set made to celebrate love and connection.',image:'https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=80',badge:'Sale',featured:true,variants:[{id:'demo-v7',label:'Gift set',price:240,compareAtPrice:250,inStock:true,stock:3}]},
+ {id:'demo-8',name:'Red Heart Necklace',category:'Necklaces',description:'A bright heart pendant and a lovely reminder to lead with love.',image:'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80',badge:'Sold out',featured:false,variants:[{id:'demo-v8',label:'One size',price:89,inStock:false,stock:0}]},
+ {id:'demo-9',name:'A Drop of Grace Set',category:'Sets',description:'A coordinated set in the signature Drop of Grace style, perfect for gifting.',image:'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80',badge:'Sale',featured:true,variants:[{id:'demo-v9',label:'Gift set',price:250,compareAtPrice:300,inStock:true,stock:5}]},
+ {id:'demo-10',name:'Office Wear',category:'Earrings',description:'Understated artisan earrings for workdays, special meetings and everything after.',image:'https://images.unsplash.com/photo-1617038220319-276d3cfab638?auto=format&fit=crop&w=800&q=80',variants:[{id:'demo-v10',label:'One size',price:40,inStock:true,stock:9}]},
+ {id:'demo-11',name:'Greek Earrings',category:'Earrings',description:'A classic Greek-inspired design, handmade for a timeless finish.',image:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',badge:'Sale',variants:[{id:'demo-v11',label:'One size',price:40,compareAtPrice:50,inStock:true,stock:6}]},
+ {id:'demo-12',name:'Stud Pack of 2',category:'Earrings',description:'Two versatile pairs of studs to mix, match and wear on repeat.',image:'https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?auto=format&fit=crop&w=800&q=80',variants:[{id:'demo-v12',label:'2 pairs',price:40,inStock:true,stock:12}]},
+ {id:'demo-13',name:'Cherry Trinket',category:'Charms',description:'A playful cherry charm, made to bring a little colour to your favourite piece.',image:'https://images.unsplash.com/photo-1611652022419-a9419f74343d?auto=format&fit=crop&w=800&q=80',badge:'Limited edition',variants:[{id:'demo-v13',label:'One charm',price:45,compareAtPrice:50,inStock:true,stock:4}]},
+ {id:'demo-14',name:'Don’t Worry',category:'Bracelets',description:'A gentle reminder to carry faith and peace with you wherever you go.',image:'https://images.unsplash.com/photo-1573408301185-9146fe634ad0?auto=format&fit=crop&w=800&q=80',badge:'Sale',variants:[{id:'demo-v14',label:'Adjustable',price:130,compareAtPrice:140,inStock:true,stock:5}]},
+ {id:'demo-15',name:'New Creation',category:'Necklaces',description:'A faith-inspired piece celebrating renewal, hope and new beginnings.',image:'https://images.unsplash.com/photo-1599643478518-a784e5dc4c8f?auto=format&fit=crop&w=800&q=80',badge:'New',variants:[{id:'demo-v15',label:'Gold tone',price:135,compareAtPrice:150,inStock:true,stock:4}]},
+ {id:'demo-16',name:'The Lost Sheep Is Found',category:'Necklaces',description:'A meaningful design inspired by the parable of the lost sheep and the joy of being found.',image:'https://images.unsplash.com/photo-1605100804763-247f67b3557e?auto=format&fit=crop&w=800&q=80',badge:'New',variants:[{id:'demo-v16',label:'Gold tone',price:150,compareAtPrice:170,inStock:true,stock:3}]}
+]};
+let CAT={products:[],categories:[],settings:{}},cart=JSON.parse(localStorage.getItem('cart')||'[]');
+const money=n=>'GHS '+Number(n).toLocaleString('en-GH',{minimumFractionDigits:2,maximumFractionDigits:2});
+function h(t,a,...k){const e=document.createElement(t);Object.entries(a||{}).forEach(([x,v])=>{if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else if(x==='class')e.className=v;else if(v!==null&&v!==undefined&&v!==false)e.setAttribute(x,v===true?'':v)});k.flat().forEach(c=>e.append(c));return e}
+async function api(action,d){const r=await fetch(CFG.API_URL,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({action,...d})});return r.json()}
+const wa=t=>{const n=(CAT.settings.whatsapp_number||'233559336422').replace(/\D/g,'');return n?'https://wa.me/'+n+'?text='+encodeURIComponent(t):''};
+function updateWhatsapp(){const link=wa('Hello Soléa Grace, I have a question about your jewellery.');$('#wa').href=link;$('#wa').style.display=link?'inline-flex':'none'}
+function save(){localStorage.setItem('cart',JSON.stringify(cart));$('#cnt').textContent=cart.reduce((s,i)=>s+i.qty,0)}
+const from=p=>Math.min(...p.variants.map(v=>v.price));
+function render(){const q=$('#q').value.toLowerCase(),c=$('#cat').value,s=$('#sort').value;
+ let l=CAT.products.filter(p=>p.variants.length&&(!c||p.category===c)&&p.name.toLowerCase().includes(q));
+ if(s)l.sort((a,b)=>s==='lo'?from(a)-from(b):from(b)-from(a));
+ const g=$('#grid');g.replaceChildren(...l.map(p=>h('button',{class:'card',onclick:()=>openProduct(p)},h('div',{class:'card-media'},h('div',{class:'ph'},p.image?h('img',{src:p.image,alt:p.name,loading:'lazy'}):'Photo coming soon'),p.badge?h('span',{class:'product-badge'},p.badge):''),h('h3',{},p.name),h('div',{class:'price'},'From '+money(from(p)),p.variants[0].compareAtPrice?h('span',{class:'old-price'},money(p.variants[0].compareAtPrice)):''))));
+ const e=$('#empty');e.hidden=!!l.length;e.textContent=!CFG.API_URL?'Set API_URL in config.js to load products.':CAT.products.length?'No pieces match your search.':'No products yet. Add products and variants in the Google Sheet.'}
+function panel(...k){$('#panel').replaceChildren(h('button',{class:'btn alt',onclick:close},'Close'),...k.flat(Infinity));$('#panel').classList.add('open');$('#shade').classList.add('open')}
+function close(){$('#panel').classList.remove('open');$('#shade').classList.remove('open')}
+function openProduct(p){let sel=null,qty=1;const info=h('div',{class:'price'},'Choose an option'),err=h('div',{class:'err'});
+ const opts=p.variants.map(v=>{const b=h('button',{class:'opt',type:'button','aria-pressed':'false',disabled:v.inStock?null:'',onclick:()=>{sel=v;opts.forEach(o=>o.setAttribute('aria-pressed',o===b));info.textContent=money(v.price)+' · '+v.stock+' available'}},v.label+(v.inStock?'':' (sold out)'));if(!v.inStock)b.disabled=true;return b});
+ const w=wa('Hello, I am interested in: '+p.name);
+ panel(h('div',{class:'ph',style:'margin:16px 0'},p.image?h('img',{src:p.image,alt:p.name}):'Photo coming soon'),h('h2',{},p.name),h('p',{},p.description||''),h('div',{class:'opts'},opts),info,
+  h('div',{class:'f'},h('label',{},'Quantity',h('input',{type:'number',min:1,max:20,value:1,oninput:e=>qty=Math.max(1,Math.min(20,+e.target.value||1))}))),err,
+  h('button',{class:'btn',onclick:()=>{if(!sel){err.textContent='Choose an option first';return}if(qty>sel.stock){err.textContent='Only '+sel.stock+' available';return}
+   const x=cart.find(i=>i.variantId===sel.id);if(x)x.qty=Math.min(20,x.qty+qty);else cart.push({variantId:sel.id,name:p.name,label:sel.label,price:sel.price,qty});save();openCart()}},'Add to bag'),' ',w?h('a',{class:'btn alt',href:w,target:'_blank',rel:'noopener'},'Ask on WhatsApp'):'')}
+const fee=(m,r)=>m==='pickup'?0:(r||'').toLowerCase().includes('accra')?CAT.settings.delivery_fee_accra:CAT.settings.delivery_fee_other;
+function openCart(){if(!cart.length){panel(h('h2',{},'Your bag'),h('p',{class:'empty'},'Your bag is empty.'));return}
+ const sub=cart.reduce((s,i)=>s+i.price*i.qty,0);
+ const rows=cart.map(i=>h('div',{class:'row'},h('div',{},h('strong',{},i.name),h('div',{class:'price'},i.label+' · '+money(i.price)),h('input',{type:'number',min:1,max:20,value:i.qty,'aria-label':'Quantity',style:'width:64px;padding:6px',onchange:e=>{i.qty=Math.max(1,Math.min(20,+e.target.value||1));save();openCart()}})),h('div',{},money(i.price*i.qty),h('br'),h('button',{class:'opt',onclick:()=>{cart=cart.filter(x=>x!==i);save();openCart()}},'Remove'))));
+ const msg='Hello, I would like to order:\n'+cart.map(i=>'- '+i.name+' ('+i.label+') x'+i.qty+' = '+money(i.price*i.qty)).join('\n')+'\nSubtotal: '+money(sub);
+ const link=wa(msg);
+ panel(h('h2',{},'Your bag'),rows,h('div',{class:'row'},'Subtotal',h('strong',{},money(sub))),link?h('p',{},h('a',{href:link,target:'_blank',rel:'noopener'},'Share this bag on WhatsApp')):'',h('button',{class:'btn',onclick:()=>checkout(sub)},'Checkout'))}
+function checkout(sub){const f=h('form',{class:'f'});const err=h('div',{class:'err'});
+ const F=(l,n,t='text',r=true)=>h('label',{},l,h('input',{name:n,type:t,required:r?'':null}));
+ f.append(F('Full name','name'),F('Phone','phone','tel'),F('Email (optional)','email','email',false),
+  h('label',{},'Delivery or pickup',h('select',{name:'method'},h('option',{value:'delivery'},'Delivery'),h('option',{value:'pickup'},'Pickup'))),
+  h('label',{},'Region',h('select',{name:'region'},...['Greater Accra','Ashanti','Central','Western','Eastern','Volta','Northern','Other region'].map(x=>h('option',{},x)))),
+  F('Delivery address','address','text',false),F('Delivery notes','notes','text',false),F('Discount code (optional)','discountCode','text',false),err,
+  h('div',{class:'price'},'Delivery fees and discounts are confirmed on the final total after you submit. Payment is arranged with the business after confirmation.'));
+ const b=h('button',{class:'btn'},'Place order');f.append(b);
+ f.onsubmit=async e=>{e.preventDefault();if(!CFG.API_URL){err.textContent='The store is not connected yet.';return}b.disabled=true;err.textContent='';
+  const d=Object.fromEntries(new FormData(f));d.items=cart.map(i=>({variantId:i.variantId,qty:i.qty}));d.clientKey=sessionStorage.ck||(sessionStorage.ck=crypto.randomUUID());
+  try{const r=await api('placeOrder',d);if(!r.ok){err.textContent=r.error;b.disabled=false;return}
+   cart=[];save();sessionStorage.removeItem('ck');const w=wa('Hello, my order reference is '+r.reference+'. Total: '+money(r.total));
+   panel(h('h2',{},'Order received'),h('p',{},'Your reference is '),h('h3',{},r.reference),h('p',{},'Total: '+money(r.total)+'. We will contact you to confirm your order and arrange payment.'),w?h('a',{class:'btn',href:w,target:'_blank',rel:'noopener'},'Message us on WhatsApp'):'')
+  }catch(x){err.textContent='Could not reach the store. Check your connection and try again.';b.disabled=false}};
+ panel(h('h2',{},'Checkout'),f)}
+const menuToggle=$('#menuToggle'),mainNav=$('#mainNav');
+const menuShade=$('#menuShade');
+function setMenuOpen(open){mainNav.classList.toggle('open',open);menuShade.classList.toggle('open',open);menuShade.setAttribute('aria-hidden',String(!open));menuToggle.setAttribute('aria-expanded',String(open));menuToggle.setAttribute('aria-label',open?'Close menu':'Open menu')}
+menuToggle.onclick=()=>setMenuOpen(menuToggle.getAttribute('aria-expanded')!=='true');
+menuShade.onclick=()=>setMenuOpen(false);
+document.addEventListener('click',e=>{if(mainNav.classList.contains('open')&&!e.target.closest('#mainNav')&&!e.target.closest('#menuToggle'))setMenuOpen(false)});
+mainNav.addEventListener('click',e=>{if(e.target.closest('a'))setMenuOpen(false)});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenuOpen(false)});
+const slides=[...document.querySelectorAll('.carousel-slide')],dots=[...document.querySelectorAll('.carousel-dot')];let activeSlide=0;
+function showSlide(index){activeSlide=(index+slides.length)%slides.length;slides.forEach((slide,i)=>{const active=i===activeSlide,stack=(i-activeSlide+slides.length)%slides.length;slide.classList.toggle('active',active);slide.dataset.stack=String(stack);slide.setAttribute('aria-hidden',String(!active));slide.inert=!active});dots.forEach((dot,i)=>dot.setAttribute('aria-current',String(i===activeSlide)))}
+showSlide(activeSlide);
+const carousel=$('.carousel');let touchStartX=null;
+carousel.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].screenX},{passive:true});
+carousel.addEventListener('touchend',e=>{if(touchStartX===null)return;const delta=e.changedTouches[0].screenX-touchStartX;if(Math.abs(delta)>50)showSlide(activeSlide+(delta<0?1:-1));touchStartX=null},{passive:true});
+const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)'),slidePause=$('#slidePause');let rotationPaused=reducedMotion.matches,rotationTimer=null,carouselHovered=false,carouselFocused=false;
+function updateRotation(){clearInterval(rotationTimer);rotationTimer=null;slidePause.textContent=rotationPaused?'Play':'Pause';slidePause.setAttribute('aria-label',rotationPaused?'Play automatic slides':'Pause automatic slides');if(!rotationPaused&&!carouselHovered&&!carouselFocused&&!document.hidden)rotationTimer=setInterval(()=>showSlide(activeSlide+1),4000)}
+slidePause.onclick=()=>{rotationPaused=!rotationPaused;updateRotation()};
+$('#slidePrev').addEventListener('click',()=>{showSlide(activeSlide-1);updateRotation()});
+$('#slideNext').addEventListener('click',()=>{showSlide(activeSlide+1);updateRotation()});
+dots.forEach((dot,i)=>dot.addEventListener('click',()=>{showSlide(i);updateRotation()}));
+carousel.addEventListener('mouseenter',()=>{carouselHovered=true;updateRotation()});
+carousel.addEventListener('mouseleave',()=>{carouselHovered=false;updateRotation()});
+carousel.addEventListener('focusin',()=>{carouselFocused=true;updateRotation()});
+carousel.addEventListener('focusout',e=>{if(!carousel.contains(e.relatedTarget)){carouselFocused=false;updateRotation()}});
+document.addEventListener('visibilitychange',updateRotation);
+reducedMotion.addEventListener('change',e=>{if(e.matches)rotationPaused=true;updateRotation()});
+updateRotation();
+const storyDialog=$('#storyDialog'),storyVideo=$('#storyVideo');
+$('#storyPlay').onclick=()=>{if(BRAND_VIDEO_URL){storyVideo.src=BRAND_VIDEO_URL;$('#storyPlaceholder').hidden=true;storyVideo.hidden=false}else{$('#storyPlaceholder').hidden=false;storyVideo.hidden=true}storyDialog.showModal()};
+$('#storyDialogClose').onclick=()=>storyDialog.close();
+storyDialog.addEventListener('click',e=>{if(e.target===storyDialog)storyDialog.close()});
+storyDialog.addEventListener('close',()=>{storyVideo.pause();storyVideo.removeAttribute('src');storyVideo.load()});
+$('#cartBtn').onclick=openCart;$('#shade').onclick=close;['q','cat','sort'].forEach(i=>$('#'+i).addEventListener('input',render));
+$('#cf').onsubmit=async e=>{e.preventDefault();const r=await api('customRequest',Object.fromEntries(new FormData(e.target)));$('#cfe').textContent=r.ok?'Request sent. We will get back to you.':r.error;if(r.ok)e.target.reset()};
+(async()=>{save();updateWhatsapp();if(!CFG.API_URL){CAT=DEMO_CATALOG;$('#previewNote').style.display='block';CAT.categories.forEach(c=>$('#cat').append(h('option',{},c)));render();return}
+ try{CAT=await (await fetch(CFG.API_URL)).json()}catch(e){}
+ $('#brand').textContent=CAT.settings.business_name||'Soléa Grace';if(CAT.settings.business_name)document.title=CAT.settings.business_name+' | Faith-inspired artisan jewellery';
+ CAT.categories.forEach(c=>$('#cat').append(h('option',{},c)));
+ updateWhatsapp();render()})();
+</script></body></html>
