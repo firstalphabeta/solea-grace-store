@@ -65,10 +65,16 @@ function doPost(e){
     if(d.action==='placeOrder') return out(refreshDashboardAfterWrite(locked(()=>placeOrder(d))));
     if(d.action==='customRequest') return out(refreshDashboardAfterWrite(customRequest(d)));
     if(String(d.action).indexOf('admin')===0){
-      const who=CacheService.getScriptCache().get('t:'+d.token); if(!who) return out({ok:false,error:'Session expired',auth:false});
+      const cache=CacheService.getScriptCache();let identity;
+      try{identity=JSON.parse(cache.get('t:'+d.token)||'null');}catch(err){identity=null;}
+      if(!identity||!identity.email||!identity.salt)return out({ok:false,error:'Session expired. Please sign in again.',auth:false});
+      const who=identity.email,user=rows('Admin_Users').find(r=>r.email===who);
+      if(!user||user.salt!==identity.salt){cache.remove('t:'+d.token);return out({ok:false,error:'Session expired. Please sign in again.',auth:false});}
       const fn={adminOrders:adminOrders,adminSummary:adminSummary,adminSetStatus:d=>locked(()=>setStatus(d,who)),
         adminPayment:d=>locked(()=>recordPayment(d,who)),adminAddExpense:addExpense,adminExpenses:()=>({ok:true,expenses:rows('Expenses').reverse().slice(0,200)}),
         adminManualOrder:d=>locked(()=>manualOrder(d,who)),
+        adminAccount:()=>({ok:true,email:who}),
+        adminChangeCredentials:d=>locked(()=>changeCredentials(d,who,d.token)),
         adminProducts:adminProducts,adminCreateProduct:adminCreateProduct,adminUpdateProduct:adminUpdateProduct,
         adminUpdateVariants:adminUpdateVariants,adminUploadImage:adminUploadImage}[d.action];
       const result=fn?fn(d):fail('Unknown action');
@@ -84,7 +90,22 @@ function login(d){
   if(n>=5) return fail('Too many attempts. Try again in 15 minutes.');
   const u=rows('Admin_Users').find(r=>r.email===String(d.email).toLowerCase());
   if(!u||hash(u.salt,String(d.password))!==u.hash){c.put(k,String(n+1),900);return fail('Wrong email or password');}
-  const t=Utilities.getUuid()+Utilities.getUuid(); c.put('t:'+t,u.email,21600); return {ok:true,token:t};
+  const t=Utilities.getUuid()+Utilities.getUuid(); c.put('t:'+t,JSON.stringify({email:u.email,salt:u.salt}),21600); return {ok:true,token:t};
+}
+function changeCredentials(d,who,oldToken){
+  const user=rows('Admin_Users').find(r=>r.email===who);
+  if(!user)return {ok:false,auth:false,error:'Admin account not found. Please sign in again.'};
+  if(hash(user.salt,String(d.currentPassword||''))!==user.hash)return fail('Current password is incorrect');
+  const email=String(d.email||'').trim().toLowerCase(),password=String(d.newPassword||'');
+  if(!/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)||email.length>254)return fail('Enter a valid email address');
+  if(rows('Admin_Users').some(r=>r.email===email&&r.email!==who))return fail('That email is already used by another admin');
+  if(password&&password.length<12)return fail('New password must be at least 12 characters');
+  const salt=password?Utilities.getUuid():user.salt;
+  setCell('Admin_Users',user._row,'email',email);
+  if(password){setCell('Admin_Users',user._row,'salt',salt);setCell('Admin_Users',user._row,'hash',hash(salt,password));}
+  const token=Utilities.getUuid()+Utilities.getUuid(),cache=CacheService.getScriptCache();
+  cache.remove('t:'+oldToken);cache.put('t:'+token,JSON.stringify({email:email,salt:salt}),21600);
+  return {ok:true,email:email,token:token};
 }
 
 function placeOrder(d){

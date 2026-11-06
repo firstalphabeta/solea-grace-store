@@ -25,6 +25,11 @@ When updating an existing deployment, use **Deploy > Manage deployments > Edit >
 2. Enter the customer's name and phone number, choose delivery or pickup, and add each item and quantity. Delivery orders need an address and region.
 3. Choose **Save WhatsApp order**. The order is added as **Unpaid**, stock is reserved, and it appears in the order list. When the customer pays, choose **Record payment** on that order. Cancelling an order returns its stock.
 
+### Changing admin sign-in details
+1. Sign in to `/admin.html` and choose **Account settings**.
+2. Enter the current password and the new email. To change the password too, enter and confirm a new password of at least 12 characters. Leave both new-password fields blank to keep the current password.
+3. Save the settings. The current session remains signed in; other sessions must sign in again.
+
 ## Host the storefront on GitHub Pages
 1. Create a GitHub repository named `solea-grace-store`. The GitHub account owner name becomes part of the site address.
 2. Push this project to the repository's `main` branch.

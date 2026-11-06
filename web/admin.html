@@ -13,12 +13,12 @@ function loginView(m=''){app.innerHTML='<h1>Admin sign in</h1><p class="err">'+e
  go.onclick=async()=>{const r=await api('login',{email:e.value,password:p.value});if(r.ok){T=r.token;sessionStorage.t=T;main()}else loginView(r.error)}}
 async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([api('adminSummary',{}),api('adminOrders',{})]);if(!s.ok||!o.ok)return;
  const K=[['Orders',s.orders],['Revenue (est.)',money(s.revenue)],['Cash received',money(s.cashReceived)],['Outstanding',money(s.outstanding)],['Gross profit (est.)',money(s.grossProfit)],['Expenses',money(s.expenses)],['Net profit (est.)',money(s.netProfit)],['Low stock variants',s.lowStock]];
- app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manual">Add WhatsApp order</button> <button id="manage">Manage products</button> <button id="out">Sign out</button></p><div id="list"></div>';
+ app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manual">Add WhatsApp order</button> <button id="manage">Manage products</button> <button id="account">Account settings</button> <button id="out">Sign out</button></p><div id="list"></div>';
  const draw=()=>{const q=f.value.toLowerCase();list.innerHTML=o.orders.filter(x=>(x.name+x.phone+x.reference).toLowerCase().includes(q)).map(x=>
   '<div class="o"><b>'+esc(x.reference)+'</b> · '+esc(x.name)+' · '+esc(x.phone)+' · '+money(x.total)+'<br><small>'+esc(x.items.map(i=>i.product_name+' ('+i.variant_label+') x'+i.qty).join(', '))+'</small><div>'+
   '<select data-s="'+x.order_id+'">'+o.statuses.map(t=>'<option'+(t===x.order_status?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
   '<span>'+esc(x.payment_status)+' · paid '+money(x.amount_paid)+'</span><button data-p="'+x.order_id+'">Record payment</button><button data-r="'+x.order_id+'">Record refund</button></div></div>').join('')||'<p>No orders yet.</p>'};
- draw();f.oninput=draw;manage.onclick=productsView;manual.onclick=manualOrderView;out.onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+ draw();f.oninput=draw;manage.onclick=productsView;manual.onclick=manualOrderView;account.onclick=credentialsView;out.onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
  csv.onclick=()=>{const H=['reference','created_at','name','phone','total','amount_paid','payment_status','order_status'];const c=[H.join(',')].concat(o.orders.map(x=>H.map(k=>'"'+String(x[k]).replace(/"/g,'""')+'"').join(',')));
   const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([c.join('\n')],{type:'text/csv'}));a.download='orders.csv';a.click()};
  list.onchange=async e=>{const id=e.target.dataset.s;if(!id)return;if(e.target.value==='Cancelled'&&!confirm('Cancel this order? Stock will be returned to inventory.')){main();return}
@@ -26,6 +26,33 @@ async function main(){app.innerHTML='Loading...';const [s,o]=await Promise.all([
  list.onclick=async e=>{const id=e.target.dataset.p||e.target.dataset.r;if(!id)return;const refund=!!e.target.dataset.r;
   const a=prompt((refund?'Refund':'Payment')+' amount (GHS)');if(!a)return;const m=prompt('Method: Cash, Mobile Money, Bank Transfer or Other','Mobile Money');const ref=prompt('Reference (optional)')||'';
   if(!confirm('Record '+(refund?'refund':'payment')+' of GHS '+a+'?'))return;const r=await api('adminPayment',{orderId:id,amount:a,method:m,reference:ref,type:refund?'refund':'payment'});if(!r.ok)alert(r.error);main()}}
+ async function credentialsView(message=''){
+  app.innerHTML='<h1>Account settings</h1><p>Change your admin sign-in email and, if you want, set a new password. Your password is stored as a secure hash, never as readable text.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div><p>Loading account...</p>';
+  document.getElementById('back').onclick=main;
+  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+  let account;
+  try{account=await api('adminAccount',{})}catch(error){app.innerHTML+='<p class="err">Could not load account settings. Check your connection and try again.</p>';return}
+  if(!account.ok){if(account.auth===false)return;app.innerHTML+='<p class="err">'+esc(account.error||'Could not load account settings.')+'</p>';return}
+  app.innerHTML='<h1>Account settings</h1><p>Change your admin sign-in email and, if you want, set a new password. Your password is stored as a secure hash, never as readable text.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div>'+
+   (message?'<p role="status">'+esc(message)+'</p>':'')+'<form class="o" id="credentials-form" style="max-width:520px"><label>Admin email<input name="email" type="email" value="'+esc(account.email)+'" autocomplete="username" required></label><label>Current password<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>New password (leave blank to keep current)<input name="newPassword" type="password" autocomplete="new-password" minlength="12"></label><small>Use at least 12 characters if changing your password.</small><label>Confirm new password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="12"></label><p class="err" id="credentials-error" role="status" aria-live="polite"></p><button type="submit">Save account settings</button></form>';
+  document.getElementById('back').onclick=main;
+  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+  const form=document.getElementById('credentials-form');
+  form.onsubmit=async e=>{
+   e.preventDefault();
+   const password=form.elements.newPassword.value,error=document.getElementById('credentials-error');
+   if(password!==form.elements.confirmPassword.value){error.textContent='The new passwords do not match.';return}
+   const button=form.querySelector('button[type=submit]');button.disabled=true;error.textContent='Saving account settings...';
+   try{
+    const result=await api('adminChangeCredentials',{email:form.elements.email.value,currentPassword:form.elements.currentPassword.value,newPassword:password});
+    if(!result.ok){error.textContent=result.error||'Could not update your account.';return}
+    T=result.token;sessionStorage.t=T;
+    app.innerHTML='<h1>Account updated</h1><p>Your sign-in details were updated successfully. You are still signed in. Use <strong>'+esc(result.email)+'</strong> the next time you log in.</p><button id="back">Back to orders</button>';
+    document.getElementById('back').onclick=main;
+   }catch(error){document.getElementById('credentials-error').textContent='Could not update your account. Check your connection and try again.'}
+   finally{button.disabled=false}
+  };
+ }
  async function manualOrderView(){
   app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div><p>Loading available products...</p>';
   document.getElementById('back').onclick=main;
