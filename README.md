@@ -5,8 +5,8 @@ Static storefront (`web/`) + Google Apps Script backend (`apps-script/Code.gs`) 
 ## Setup
 1. Create a Google Sheet. Extensions > Apps Script. Paste `apps-script/Code.gs`.
 2. Run `setup()` once (creates all data sheets and a Dashboard with KPI cards and charts). Authorise when asked.
-3. Edit the email/password inside `createAdmin()`, run it once, then change those two lines back. Use a long unique password.
-4. Fill the **Settings** sheet: `business_name`, `whatsapp_number` (digits with country code, e.g. 233XXXXXXXXX), `delivery_fee_accra`, `delivery_fee_other`.
+3. Edit the email/password inside `createAdmin()`, run it once, then change those two lines back. Use a long unique password. If you have lost the login details, enter new ones in `resetAdminCredentials()` and run that function; it replaces the existing admin account. Remove your password from the code after running it.
+4. Fill the **Settings** sheet: `business_name`, `whatsapp_number` (`233596117844`), `delivery_fee_accra`, `delivery_fee_other`. The public contact links also use `WHATSAPP_NUMBER` in `web/config.js`; keep it in sync when the number changes.
 5. Add products, prices, and stock from **Admin > Manage products > Add a product**. The admin screen creates product and variant rows in the Google Sheet. You can still add them directly to **Products** and **Product_Variants** if you prefer. Run `setup()` again after updating the script; it safely adds the new `badge` column to an existing Products sheet. Run `authorizeImageUploads()` once from the Apps Script editor and approve Drive access.
 6. Deploy > New deployment > Web app. Execute as: Me. Access: Anyone. Copy the URL into `web/config.js` (`API_URL`).
 7. Run locally with `npx serve web` in VS Code, or deploy `web/` to Cloudflare Pages/Netlify. Admin is at `/admin.html`.
@@ -20,6 +20,8 @@ When updating an existing deployment, use **Deploy > Manage deployments > Edit >
 4. Uploaded images are saved in the script owner's Drive, shared with anyone who has the link so they can appear on the public storefront, and attached to the product automatically. You can also paste an existing public image URL.
 5. Choose **New** or **Limited Edition** under **Badge / collection** to place the product in those storefront category filters. Edit product details, prices, options, or stock from the same screen.
 
+The storefront checkout uses a contact-and-delivery form with an itemized order summary, responsive for phones and desktop. Shipping fees are estimated from the configured Settings values and the server confirms the final order total. Payments are arranged after confirmation; the site does not collect card details or process payments.
+
 ### Recording orders from WhatsApp
 1. In `/admin.html`, choose **Add WhatsApp order**.
 2. Enter the customer's name and phone number, choose delivery or pickup, and add each item and quantity. Delivery orders need an address and region.
@@ -29,6 +31,14 @@ When updating an existing deployment, use **Deploy > Manage deployments > Edit >
 1. Sign in to `/admin.html` and choose **Account settings**.
 2. Enter the current password and the new email. To change the password too, enter and confirm a new password of at least 12 characters. Leave both new-password fields blank to keep the current password.
 3. Save the settings. The current session remains signed in; other sessions must sign in again.
+
+### Resetting a lost admin login
+1. Open the bound Apps Script project from the Google Sheet (**Extensions > Apps Script**).
+2. In `Code.gs`, find `resetAdminCredentials()` and replace its example email and password with the new login details you want. Use a unique password of at least 12 characters.
+3. Select `resetAdminCredentials` in the function list and click **Run**. Approve access if Google asks.
+4. Change the example values back in the code and save. Then sign in at `/admin.html` with the new email and password.
+
+This reset replaces the existing admin account in the `Admin_Users` sheet. The password is stored as a salted hash, not as readable text. Do not share or commit your password.
 
 ## Host the storefront on GitHub Pages
 1. Create a GitHub repository named `solea-grace-store`. The GitHub account owner name becomes part of the site address.
@@ -46,6 +56,7 @@ GitHub Pages hosts the public storefront only; it does not run the Apps Script b
 - Every status/payment change is written to **Order_History**.
 - Revenue excludes Cancelled/Returned orders; cash received comes only from recorded payments; profit figures are estimates.
 - The **Dashboard** tab summarizes sales, payments, outstanding balance, estimated profit, orders, customers, custom requests, low stock and inventory cost. It includes monthly sales, order-status and best-seller charts, and refreshes after website/admin writes or manual edits to data tabs. The original data remains in its individual tabs (Orders, Order_Items, Payments, Customers, Custom_Orders, Expenses, inventory and product tabs).
+- The web admin workspace includes an overview with date filters (up to 31 days for the daily chart), recent orders, top sellers and low-stock alerts; searchable/order-management tools; product and customer lists; custom request status tracking; and expense entry/history. Deploy the latest `apps-script/Code.gs` to Apps Script before these new pages can load their data.
 - Dashboard numbers are based on recorded store data, not website visits or conversion rates. Those require a separate web-analytics integration and visitor consent setup.
 
 ## Known limits (be honest with the owner)
@@ -53,5 +64,5 @@ GitHub Pages hosts the public storefront only; it does not run the Apps Script b
 - Sheets slows past a few thousand orders. All data access is in `Code.gs`; migrate to Supabase/Postgres later by replacing those functions.
 - Back up: File > Make a copy of the Sheet weekly, or add a time-driven trigger that copies it.
 
-## Not built yet (next phases)
-Stock adjustment history and returns screens, customer pages, delivery module, expense UI (backend `adminAddExpense` exists), discount UI, date-range filters in the admin UI, FAQ/policy pages, SEO files and product URLs. The Google Sheet Dashboard provides current all-time KPIs and charts; it is not a website traffic or conversion analytics tracker.
+## Still not built
+Stock adjustment history and returns screens, a delivery module, discount UI, FAQ/policy pages, SEO files and product URLs. The Google Sheet Dashboard provides sales and operations metrics; it is not a website traffic or conversion analytics tracker.
