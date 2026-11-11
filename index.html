@@ -70,6 +70,7 @@ header .wrap{display:flex;justify-content:space-between;align-items:center;heigh
 .ph img{width:100%;height:100%;object-fit:cover}
 .card:hover .ph img{transform:scale(1.035)}.ph img{transition:transform .35s}
 .product-badge{position:absolute;top:10px;left:10px;padding:5px 9px;background:#fff;color:var(--ink);font-size:9px;letter-spacing:.09em;text-transform:uppercase}
+.product-gallery-main{width:100%;aspect-ratio:4/5;background:#f0efec;overflow:hidden}.product-gallery-main img{width:100%;height:100%;object-fit:cover}.product-gallery-thumbs{display:flex;gap:8px;overflow:auto;padding:10px 0}.product-gallery-thumb{width:64px;height:80px;flex:0 0 64px;padding:0;border:1px solid var(--line);background:#f0efec;overflow:hidden;cursor:pointer}.product-gallery-thumb[aria-current=true]{border:2px solid var(--ink)}.product-gallery-thumb img{width:100%;height:100%;object-fit:cover}
 .card h3{font:500 15px 'DM Sans',sans-serif;margin-top:12px}.price{color:var(--mut);font-size:13px;margin-top:3px}.old-price{margin-left:7px;text-decoration:line-through;color:#9b9992}
 .empty{padding:40px 0;color:var(--mut)}
 .panel{position:fixed;inset:0 0 0 auto;width:min(440px,100%);background:var(--w);z-index:20;padding:24px;overflow:auto;transform:translateX(100%);transition:transform .25s}
@@ -208,10 +209,11 @@ function render(){const q=$('#q').value.toLowerCase(),c=$('#cat').value,s=$('#so
  const e=$('#empty');e.hidden=!!l.length;e.textContent=!CFG.API_URL?'Set API_URL in config.js to load products.':CAT.products.length?'No pieces match your search.':'No products yet. Add products and variants in the Google Sheet.'}
 function panel(...k){$('#panel').classList.remove('checkout-panel');$('#panel').replaceChildren(h('button',{class:'btn alt',onclick:close},'Close'),...k.flat(Infinity));$('#panel').classList.add('open');$('#shade').classList.add('open')}
 function close(){$('#panel').classList.remove('open','checkout-panel');$('#shade').classList.remove('open')}
-function openProduct(p){let sel=null,qty=1;const info=h('div',{class:'price'},'Choose an option'),err=h('div',{class:'err'});
+function openProduct(p){let sel=null,qty=1;const info=h('div',{class:'price'},'Choose an option'),err=h('div',{class:'err'}),images=p.images&&p.images.length?p.images:(p.image?[p.image]:[]),hero=h('div',{class:'product-gallery-main'},images.length?h('img',{src:images[0],alt:p.name}):'Photo coming soon');
+ const thumbs=images.length?h('div',{class:'product-gallery-thumbs','aria-label':'Product photos'},...images.map((src,index)=>h('button',{class:'product-gallery-thumb',type:'button','aria-label':'Show product photo '+(index+1),'aria-current':index===0?'true':'false',onclick:()=>{hero.querySelector('img').src=src;hero.querySelector('img').alt=p.name+' photo '+(index+1);[...thumbs.children].forEach((thumb,i)=>thumb.setAttribute('aria-current',String(i===index)))}},h('img',{src:src,alt:''})))):'';
  const opts=p.variants.map(v=>{const b=h('button',{class:'opt',type:'button','aria-pressed':'false',disabled:v.inStock?null:'',onclick:()=>{sel=v;opts.forEach(o=>o.setAttribute('aria-pressed',o===b));info.textContent=money(v.price)+' · '+v.stock+' available'}},v.label+(v.inStock?'':' (sold out)'));if(!v.inStock)b.disabled=true;return b});
  const w=wa('Hello, I am interested in: '+p.name);
- panel(h('div',{class:'ph',style:'margin:16px 0'},p.image?h('img',{src:p.image,alt:p.name}):'Photo coming soon'),h('h2',{},p.name),h('p',{},p.description||''),h('div',{class:'opts'},opts),info,
+ panel(hero,thumbs,h('h2',{},p.name),h('p',{},p.description||''),h('div',{class:'opts'},opts),info,
   h('div',{class:'f'},h('label',{},'Quantity',h('input',{type:'number',min:1,max:20,value:1,oninput:e=>qty=Math.max(1,Math.min(20,+e.target.value||1))}))),err,
   h('button',{class:'btn',onclick:()=>{if(!sel){err.textContent='Choose an option first';return}if(qty>sel.stock){err.textContent='Only '+sel.stock+' available';return}
    const x=cart.find(i=>i.variantId===sel.id);if(x)x.qty=Math.min(20,x.qty+qty);else cart.push({variantId:sel.id,name:p.name,label:sel.label,price:sel.price,qty});save();openCart()}},'Add to bag'),' ',w?h('a',{class:'btn alt',href:w,target:'_blank',rel:'noopener'},'Ask on WhatsApp'):'')}

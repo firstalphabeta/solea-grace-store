@@ -7,18 +7,26 @@ Static storefront (`web/`) + Google Apps Script backend (`apps-script/Code.gs`) 
 2. Run `setup()` once (creates all data sheets and a Dashboard with KPI cards and charts). Authorise when asked.
 3. Edit the email/password inside `createAdmin()`, run it once, then change those two lines back. Use a long unique password. If you have lost the login details, enter new ones in `resetAdminCredentials()` and run that function; it replaces the existing admin account. Remove your password from the code after running it.
 4. Fill the **Settings** sheet: `business_name`, `whatsapp_number` (`233596117844`), `delivery_fee_accra`, `delivery_fee_other`. The public contact links also use `WHATSAPP_NUMBER` in `web/config.js`; keep it in sync when the number changes.
-5. Add products, prices, and stock from **Admin > Manage products > Add a product**. The admin screen creates product and variant rows in the Google Sheet. You can still add them directly to **Products** and **Product_Variants** if you prefer. Run `setup()` again after updating the script; it safely adds the new `badge` column to an existing Products sheet. Run `authorizeImageUploads()` once from the Apps Script editor and approve Drive access.
+5. Add products, prices, stock, and photos together from **Admin > Products > Add product**. Choose up to 8 photos from your device; uploaded product photos are saved to the script owner's Drive. The Products page shows a searchable storefront-style catalog where products can be edited or hidden and shown again. Hiding keeps the product and sales history in the sheet. Run `setup()` again after updating the script; it safely adds new columns and the `Product_Images` sheet to an existing store. Run `authorizeImageUploads()` once from the Apps Script editor and approve Drive access.
 6. Deploy > New deployment > Web app. Execute as: Me. Access: Anyone. Copy the URL into `web/config.js` (`API_URL`).
 7. Run locally with `npx serve web` in VS Code, or deploy `web/` to Cloudflare Pages/Netlify. Admin is at `/admin.html`.
 
 When updating an existing deployment, use **Deploy > Manage deployments > Edit > New version > Deploy** so the website can use the updated Apps Script.
 
 ### Adding product photos and collections
-1. Sign in at `/admin.html`, choose **Manage products**, then **Add a product**.
-2. Enter the product name, category, description, price-option name (such as One size or Gold), price, your cost, stock quantity, and low-stock threshold. Add more options for different sizes or colours, then choose **Create product**.
-3. Use a portrait photo around **1200 × 1500 pixels (4:5 ratio)** so product cards line up neatly. Keep the product centered because the storefront crops images to fill the card. JPG or WebP is recommended; the uploader accepts JPG, PNG, WebP, or GIF up to 5 MB.
-4. Uploaded images are saved in the script owner's Drive, shared with anyone who has the link so they can appear on the public storefront, and attached to the product automatically. You can also paste an existing public image URL.
-5. Choose **New** or **Limited Edition** under **Badge / collection** to place the product in those storefront category filters. Edit product details, prices, options, or stock from the same screen.
+1. Sign in at `/admin.html` and open **Products**, then choose **Add product**.
+2. Enter the product name, category, description, price-option name (such as One size or Gold), price, your cost, stock quantity, and low-stock threshold. Add more options for different sizes or colours.
+3. Choose up to 8 product photos in the same form. Use portrait photos around **1200 × 1500 pixels (4:5 ratio)** so product cards line up neatly. Keep the product centered because the storefront crops images to fill the card. JPG or WebP is recommended; the uploader accepts JPG, PNG, WebP, or GIF up to 5 MB per photo and 6 MB combined. Reorder photos with the move buttons; the first photo is the storefront cover.
+4. Choose **Create product** to save the details and photos together. Images are stored in the script owner's Drive and shared with anyone who has the link so they can appear on the public storefront.
+5. Use the searchable catalog to preview, edit, or hide/show products. Hidden products do not appear in the storefront, but their order history stays intact. Choose **New** or **Limited Edition** under **Badge / collection** for storefront badges. To create two test items, use **Add product** for each item; each can be edited or hidden later.
+
+### Promotions and discount codes
+1. In the admin workspace, open **Promotions** and choose **Create promotion**.
+2. Set a unique code, percentage or fixed-amount discount, minimum order, optional maximum uses, optional start/end dates, and whether it is active. A maximum of `0` means unlimited uses; leaving dates blank means no date restriction.
+3. Customers enter the code in the checkout discount-code field. The server validates the code, dates, minimum spend and use limit and calculates the discount; creating a promotion does not automatically discount every order.
+4. Use **Pause** to stop a code without deleting its record or usage history. Existing rows in the **Discounts** sheet are managed in this same Promotions page.
+
+The storefront product detail panel displays the product gallery with selectable thumbnails. When updating an existing deployment, update the Apps Script and publish the latest `web/` files; run `setup()` once so the `Product_Images` sheet exists.
 
 The storefront checkout uses a contact-and-delivery form with an itemized order summary, responsive for phones and desktop. Shipping fees are estimated from the configured Settings values and the server confirms the final order total. Payments are arranged after confirmation; the site does not collect card details or process payments.
 
@@ -30,7 +38,7 @@ The storefront checkout uses a contact-and-delivery form with an itemized order 
 ### Changing admin sign-in details
 1. Sign in to `/admin.html` and choose **Account settings**.
 2. Enter the current password and the new email. To change the password too, enter and confirm a new password of at least 12 characters. Leave both new-password fields blank to keep the current password.
-3. Save the settings. The current session remains signed in; other sessions must sign in again.
+3. Save the settings. The current session remains signed in; other sessions must sign in again. The **Sign out** control is also in **Account settings**.
 
 ### Resetting a lost admin login
 1. Open the bound Apps Script project from the Google Sheet (**Extensions > Apps Script**).
@@ -56,7 +64,7 @@ GitHub Pages hosts the public storefront only; it does not run the Apps Script b
 - Every status/payment change is written to **Order_History**.
 - Revenue excludes Cancelled/Returned orders; cash received comes only from recorded payments; profit figures are estimates.
 - The **Dashboard** tab summarizes sales, payments, outstanding balance, estimated profit, orders, customers, custom requests, low stock and inventory cost. It includes monthly sales, order-status and best-seller charts, and refreshes after website/admin writes or manual edits to data tabs. The original data remains in its individual tabs (Orders, Order_Items, Payments, Customers, Custom_Orders, Expenses, inventory and product tabs).
-- The web admin workspace includes an overview with date filters (up to 31 days for the daily chart), recent orders, top sellers and low-stock alerts; searchable/order-management tools; product and customer lists; custom request status tracking; and expense entry/history. Deploy the latest `apps-script/Code.gs` to Apps Script before these new pages can load their data.
+- The web admin workspace includes an overview with date filters (up to 31 days for the daily chart), recent orders, top sellers and low-stock alerts; searchable/order-management tools; product and customer lists; promotion management; custom request status tracking; and expense entry/history. Deploy the latest `apps-script/Code.gs` to Apps Script before these features can load their data.
 - Dashboard numbers are based on recorded store data, not website visits or conversion rates. Those require a separate web-analytics integration and visitor consent setup.
 
 ## Known limits (be honest with the owner)
@@ -65,4 +73,4 @@ GitHub Pages hosts the public storefront only; it does not run the Apps Script b
 - Back up: File > Make a copy of the Sheet weekly, or add a time-driven trigger that copies it.
 
 ## Still not built
-Stock adjustment history and returns screens, a delivery module, discount UI, FAQ/policy pages, SEO files and product URLs. The Google Sheet Dashboard provides sales and operations metrics; it is not a website traffic or conversion analytics tracker.
+Stock adjustment history and returns screens, a delivery module, FAQ/policy pages, SEO files and product URLs. The Google Sheet Dashboard provides sales and operations metrics; it is not a website traffic or conversion analytics tracker.

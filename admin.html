@@ -2,10 +2,14 @@
 <style>body{font:15px/1.5 system-ui,sans-serif;margin:0;background:#F6F5F2;color:#14201B}.w{max-width:1100px;margin:auto;padding:16px}
 input,select,button{font:inherit;padding:9px;border:1px solid #CFCBC2;background:#fff;min-height:40px}button{cursor:pointer;background:#14201B;color:#fff;border:0}
 .k{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin:14px 0}.k div{background:#fff;padding:12px;border:1px solid #E2DFD8}.k b{display:block;font-size:20px}
+.catalog-toolbar{display:flex;gap:12px;align-items:center;justify-content:space-between;margin:22px 0}.catalog-filters{display:flex;gap:10px;flex:1}.catalog-filters input{max-width:380px;width:100%}.catalog-count{color:#68726c;font-size:13px;margin:0 0 12px}.catalog-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}.catalog-card{overflow:hidden;background:#fff;border:1px solid #e6e2d9;border-radius:12px;min-width:0}.catalog-card.is-hidden{opacity:.76}.catalog-image{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:#efeee9}.catalog-placeholder{display:grid;place-items:center;color:#77766f;font-size:13px}.catalog-info{padding:14px}.catalog-info h2{font:500 18px/1.2 Georgia,serif;margin:0 0 5px}.catalog-meta,.catalog-stock{font-size:12px;color:#68726c;margin:4px 0}.catalog-price{font-weight:600;margin:9px 0}.catalog-status{display:inline-block;border-radius:99px;background:#e8f1e9;color:#285d36;padding:3px 9px;font-size:11px}.catalog-status.hidden{background:#f1ece2;color:#69532f}.catalog-actions{display:flex;gap:8px;margin-top:12px}.catalog-actions button{flex:1;padding:8px;font-size:12px}.catalog-actions .secondary{background:#ece9e2;color:#28352e}.product-dialog{width:min(920px,calc(100vw - 28px));max-height:92vh;overflow:auto;border:0;border-radius:16px;padding:0;color:#14201b;box-shadow:0 24px 80px #17171355}.product-dialog::backdrop{background:#1119}.product-dialog-inner{padding:clamp(18px,3vw,30px)}.editor-heading{display:flex;justify-content:space-between;align-items:start;gap:16px;margin-bottom:18px}.editor-heading h2{font:500 26px Georgia,serif;margin:0}.editor-heading p{color:#68726c;margin:6px 0}.editor-close{background:#ece9e2;color:#28352e;font-size:20px;line-height:1;padding:6px 12px}.editor-grid{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(230px,.7fr);gap:22px}.editor-main label,.editor-side label{display:block;margin:10px 0 5px}.editor-main input,.editor-main select,.editor-main textarea,.editor-side input{width:100%;margin-top:4px}.editor-main textarea{min-height:84px}.image-drop{border:1px dashed #b6b0a3;border-radius:12px;padding:14px;background:#faf9f6}.image-drop img{display:block;width:100%;aspect-ratio:4/5;object-fit:cover;background:#efeee9;border-radius:8px;margin-bottom:10px}.image-drop input[type=file]{padding:8px}.editor-footer{display:flex;justify-content:space-between;gap:12px;align-items:center;margin-top:20px;padding-top:16px;border-top:1px solid #e6e2d9}.editor-footer .status{color:#56645b;font-size:13px}.editor-footer button[type=submit]{padding:11px 20px}.workspace .catalog-card button:focus-visible,.product-dialog button:focus-visible,.product-dialog input:focus-visible,.product-dialog select:focus-visible,.product-dialog textarea:focus-visible{outline:3px solid #b29668;outline-offset:2px}.session-actions{max-width:520px;margin-top:24px;padding-top:18px;border-top:1px solid #e6e2d9}.session-actions button{background:#ece9e2;color:#28352e}
+.gallery-editor{display:grid;grid-template-columns:repeat(auto-fill,minmax(110px,1fr));gap:10px;margin:12px 0}.gallery-photo{position:relative;border:1px solid #e6e2d9;border-radius:9px;padding:7px;background:#fff}.gallery-photo img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:5px;background:#efeee9}.gallery-photo p{font-size:11px;margin:5px 0}.gallery-photo button{width:100%;margin-top:5px;font-size:11px;padding:6px}.gallery-photo .secondary{background:#ece9e2;color:#28352e}.promotion-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:14px}.promotion-card{background:white;border:1px solid #e6e2d9;border-radius:12px;padding:18px}.promotion-card h2{font:600 19px/1.2 system-ui;margin:0 0 8px;letter-spacing:.04em}.promotion-card p{color:#68726c;margin:5px 0;font-size:13px}.promotion-card .promotion-actions{display:flex;gap:8px;margin-top:14px}.promotion-card .promotion-actions button{flex:1}.promotion-card .secondary{background:#ece9e2;color:#28352e}.promotion-state{display:inline-block;border-radius:99px;background:#e8f1e9;color:#285d36;padding:3px 9px;font-size:11px}.promotion-state.paused{background:#f1ece2;color:#69532f}.promotion-dialog{width:min(620px,calc(100vw - 28px));max-height:92vh;overflow:auto;border:0;border-radius:16px;padding:24px;color:#14201b;box-shadow:0 24px 80px #17171355}.promotion-dialog::backdrop{background:#1119}.promotion-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.promotion-form label{display:grid;gap:5px}.promotion-form .full{grid-column:1/-1}.promotion-dialog-head{display:flex;justify-content:space-between;align-items:start;margin-bottom:16px}.promotion-dialog-head h2{font:500 25px Georgia,serif;margin:0}.promotion-help{color:#68726c;font-size:13px;margin:4px 0}.promotion-submit{grid-column:1/-1;display:flex;justify-content:space-between;align-items:center;gap:12px;margin-top:8px}.promotion-submit .status{font-size:13px;color:#56645b}
 .o{background:#fff;border:1px solid #E2DFD8;padding:12px;margin:10px 0}.o>div{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:6px}.err{color:#9B1C1C}small{color:#5C6660}
 .products{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}.product{margin:0;min-width:0}.product label{display:block;margin-top:10px}.product input,.product select,.product textarea{width:100%;margin-top:4px}.product textarea{min-height:78px}.product .preview{width:100%;height:220px;object-fit:cover;background:#f0efec;margin-top:10px}.product .status{display:block;margin-top:8px}.hint{color:#5C6660}.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}.variant-list{display:grid;gap:8px;margin-top:8px}.variant{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:10px;background:#F6F5F2;border:1px solid #E2DFD8}.variant label{margin:0;font-size:12px}.variant .check{display:flex;align-items:center;gap:6px;grid-column:span 2}.variant .check input,.check input{width:auto;margin:0}.product-head{display:flex;justify-content:space-between;align-items:center;gap:10px}.product-head h2{font-size:20px}.section-title{margin:18px 0 6px;font-size:16px}.manual-order{max-width:760px}.manual-order label{display:block;margin:12px 0 4px}.manual-order input,.manual-order select,.manual-order textarea{width:100%;padding:10px;border:1px solid #CFCBC2;min-height:42px}.manual-order textarea{min-height:76px}.manual-line{display:grid;grid-template-columns:minmax(0,1fr) 120px auto;gap:8px;margin:9px 0;align-items:center}.manual-total{font-weight:600;margin:14px 0}
 body.admin-on{background:#f5f4f0}#adminNav{position:fixed;inset:0 auto 0 0;width:238px;background:#17231e;color:#f8f6f0;padding:24px 16px;box-sizing:border-box;z-index:5;display:flex;flex-direction:column;gap:26px}#adminNav[hidden]{display:none}.brand{font-family:Georgia,serif;font-size:22px;letter-spacing:.04em}.brand small{display:block;color:#c5b794;font:11px system-ui;letter-spacing:.16em;margin-top:4px}.navlinks{display:grid;gap:6px}.navlinks button,.nav-bottom button{width:100%;text-align:left;background:transparent;color:#e5e5dd;border:0;border-radius:8px;padding:11px 12px}.navlinks button:hover,.navlinks button.active{background:#34443b;color:white}.nav-bottom{margin-top:auto}.nav-bottom button{color:#d8b873}.workspace{margin-left:238px!important;max-width:none!important;padding:34px clamp(18px,4vw,56px)!important}.workspace h1{font:500 clamp(26px,3vw,34px)/1.2 Georgia,serif;margin:4px 0 8px}.workspace h2{font-family:Georgia,serif}.workspace .k{grid-template-columns:repeat(auto-fit,minmax(185px,1fr));gap:14px;margin:22px 0}.workspace .k div,.workspace .o{background:white;border:1px solid #e6e2d9;border-radius:12px;box-shadow:0 3px 14px #2c30220a;padding:17px}.workspace .k b{font-size:22px;margin-top:7px}.workspace input,.workspace select,.workspace textarea{border-radius:7px}.workspace button{border-radius:7px}.workspace .page-intro{color:#68726c;margin:0 0 20px}.workspace .section-card{background:white;border:1px solid #e6e2d9;border-radius:12px;padding:18px;margin:14px 0}.workspace table{width:100%;border-collapse:collapse;background:white}.workspace th,.workspace td{text-align:left;padding:11px 12px;border-bottom:1px solid #ece9e2;vertical-align:top}.workspace th{font-size:12px;text-transform:uppercase;letter-spacing:.06em;color:#69736c}.table-wrap{overflow:auto;border:1px solid #e6e2d9;border-radius:12px}.chart{display:flex;align-items:end;gap:8px;min-height:190px;padding:20px 10px 0;border-bottom:1px solid #dedbd4}.bar-column{flex:1;min-width:18px;text-align:center;font-size:11px;color:#68726c}.bar{position:relative;min-height:3px;max-width:40px;margin:auto;background:#a47b3f;border-radius:5px 5px 0 0}.bar-column span{display:block;white-space:nowrap;margin-top:7px}.dashboard-grid{display:grid;grid-template-columns:minmax(0,2fr) minmax(250px,1fr);gap:14px}.pill{display:inline-block;background:#f0eee8;border-radius:99px;padding:3px 9px;font-size:12px}.empty{padding:24px;color:#69736c;text-align:center}.form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}.form-grid label{display:grid;gap:5px}.form-grid button{align-self:end}
 @media(max-width:760px){#adminNav{position:sticky;inset:0;width:auto;height:auto;padding:10px 12px;gap:8px}.brand{font-size:18px}.brand small{display:none}.navlinks{display:flex;overflow:auto;gap:4px}.navlinks button{white-space:nowrap;width:auto;padding:8px 10px}.nav-bottom{display:flex;flex-direction:row;gap:4px;margin-top:0;overflow:auto}.nav-bottom button{width:auto;white-space:nowrap;padding:8px 10px}.workspace{margin-left:0!important;padding:20px 14px!important}.dashboard-grid{grid-template-columns:1fr}.workspace .k{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.image-drop [hidden]{display:none}
+@media(max-width:680px){.catalog-toolbar{align-items:stretch;flex-direction:column}.catalog-filters{flex-direction:column}.catalog-filters input{max-width:none}.editor-grid{grid-template-columns:1fr}.editor-side{order:-1}.editor-footer{align-items:flex-start;flex-direction:column}.promotion-form{grid-template-columns:1fr}.promotion-form .full,.promotion-submit{grid-column:auto}.promotion-dialog{padding:18px}}
 @media(max-width:520px){.manual-line{grid-template-columns:1fr 90px}.manual-line button{grid-column:span 2}}</style></head><body><div id="adminNav" hidden></div><div class="w" id="app"></div>
 <script src="config.js"></script><script>
 let T=sessionStorage.t||'';const app=document.getElementById('app'),nav=document.getElementById('adminNav');
@@ -16,11 +20,11 @@ function signOut(){sessionStorage.removeItem('t');T='';nav.hidden=true;document.
 function workspace(active){
  document.body.classList.add('admin-on');app.classList.add('workspace');nav.hidden=false;
  nav.innerHTML='<div class="brand">SOLEA GRACE<small>BUSINESS WORKSPACE</small></div><div class="navlinks">'+
-  [['dashboard','Overview'],['orders','Orders'],['products','Products'],['customers','Customers'],['requests','Custom orders'],['expenses','Expenses'],['account','Account settings']].map(x=>'<button data-page="'+x[0]+'" class="'+(active===x[0]?'active':'')+'">'+x[1]+'</button>').join('')+
-  '</div><div class="nav-bottom"><button data-page="manual">＋ Add WhatsApp order</button><button data-page="logout">Sign out</button></div>';
+  [['dashboard','Overview'],['orders','Orders'],['products','Products'],['promotions','Promotions'],['customers','Customers'],['requests','Custom orders'],['expenses','Expenses'],['account','Account settings']].map(x=>'<button data-page="'+x[0]+'" class="'+(active===x[0]?'active':'')+'">'+x[1]+'</button>').join('')+
+  '</div><div class="nav-bottom"><button data-page="manual">＋ Add WhatsApp order</button></div>';
  nav.onclick=e=>{const b=e.target.closest('[data-page]');if(!b)return;const page=b.dataset.page;
-  if(page==='logout')return signOut();
   if(page==='dashboard')dashboardView();else if(page==='orders')main();else if(page==='products')productsView();
+  else if(page==='promotions')promotionsView();
   else if(page==='manual')manualOrderView();else if(page==='customers')customersView();
   else if(page==='requests')customRequestsView();else if(page==='expenses')expensesView();
   else if(page==='account')credentialsView();
@@ -84,7 +88,7 @@ async function expensesView(message=''){
 }
 async function main(){workspace('orders');app.innerHTML='Loading...';try{const [s,o]=await Promise.all([api('adminSummary',{}),api('adminOrders',{})]);if(s.auth===false||o.auth===false)return;if(!s.ok||!o.ok){app.innerHTML='<h1>Orders</h1><p class="err">'+esc(s.error||o.error||'Could not load orders.')+'</p>';return}
  const K=[['Orders',s.orders],['Revenue (est.)',money(s.revenue)],['Cash received',money(s.cashReceived)],['Outstanding',money(s.outstanding)],['Gross profit (est.)',money(s.grossProfit)],['Expenses',money(s.expenses)],['Net profit (est.)',money(s.netProfit)],['Low stock variants',s.lowStock]];
- app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manual">Add WhatsApp order</button> <button id="manage">Manage products</button> <button id="account">Account settings</button> <button id="out">Sign out</button></p><div id="list"></div>';
+ app.innerHTML='<h1>Orders</h1><div class="k">'+K.map(k=>'<div><small>'+k[0]+'</small><b>'+k[1]+'</b></div>').join('')+'</div><small>'+esc(s.note)+'</small><p><input id="f" placeholder="Search name, phone, reference"> <button id="csv">Export CSV</button> <button id="manual">Add WhatsApp order</button> <button id="manage">Manage products</button> <button id="account">Account settings</button></p><div id="list"></div>';
  const draw=()=>{const q=f.value.toLowerCase();list.innerHTML=o.orders.filter(x=>(x.name+x.phone+x.reference).toLowerCase().includes(q)).map(x=>
   '<div class="o"><b>'+esc(x.reference)+'</b> · '+esc(x.name)+' · '+esc(x.phone)+' · '+money(x.total)+'<br><small>'+esc(x.items.map(i=>i.product_name+' ('+i.variant_label+') x'+i.qty).join(', '))+'</small><div>'+
   '<select data-s="'+x.order_id+'">'+o.statuses.map(t=>'<option'+(t===x.order_status?' selected':'')+'>'+t+'</option>').join('')+'</select>'+
@@ -100,14 +104,13 @@ async function main(){workspace('orders');app.innerHTML='Loading...';try{const [
 }
  async function credentialsView(message=''){
   workspace('account');
-  app.innerHTML='<h1>Account settings</h1><p>Change your admin sign-in email and, if you want, set a new password. Your password is stored as a secure hash, never as readable text.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div><p>Loading account...</p>';
+  app.innerHTML='<h1>Account settings</h1><p>Change your admin sign-in email and, if you want, set a new password. Your password is stored as a secure hash, never as readable text.</p><div class="toolbar"><button id="back">← Back to orders</button></div><p>Loading account...</p>';
   document.getElementById('back').onclick=main;
-  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
   let account;
   try{account=await api('adminAccount',{})}catch(error){app.innerHTML+='<p class="err">Could not load account settings. Check your connection and try again.</p>';return}
   if(!account.ok){if(account.auth===false)return;app.innerHTML+='<p class="err">'+esc(account.error||'Could not load account settings.')+'</p>';return}
-  app.innerHTML='<h1>Account settings</h1><p>Change your admin sign-in email and, if you want, set a new password. Your password is stored as a secure hash, never as readable text.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div>'+
-   (message?'<p role="status">'+esc(message)+'</p>':'')+'<form class="o" id="credentials-form" style="max-width:520px"><label>Admin email<input name="email" type="email" value="'+esc(account.email)+'" autocomplete="username" required></label><label>Current password<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>New password (leave blank to keep current)<input name="newPassword" type="password" autocomplete="new-password" minlength="12"></label><small>Use at least 12 characters if changing your password.</small><label>Confirm new password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="12"></label><p class="err" id="credentials-error" role="status" aria-live="polite"></p><button type="submit">Save account settings</button></form>';
+  app.innerHTML='<h1>Account settings</h1><p>Change your admin sign-in email and, if you want, set a new password. Your password is stored as a secure hash, never as readable text.</p><div class="toolbar"><button id="back">← Back to orders</button></div>'+
+   (message?'<p role="status">'+esc(message)+'</p>':'')+'<form class="o" id="credentials-form" style="max-width:520px"><label>Admin email<input name="email" type="email" value="'+esc(account.email)+'" autocomplete="username" required></label><label>Current password<input name="currentPassword" type="password" autocomplete="current-password" required></label><label>New password (leave blank to keep current)<input name="newPassword" type="password" autocomplete="new-password" minlength="12"></label><small>Use at least 12 characters if changing your password.</small><label>Confirm new password<input name="confirmPassword" type="password" autocomplete="new-password" minlength="12"></label><p class="err" id="credentials-error" role="status" aria-live="polite"></p><button type="submit">Save account settings</button></form><section class="session-actions"><h2>Session</h2><p class="hint">Sign out when you’re finished using this device.</p><button id="out">Sign out</button></section>';
   document.getElementById('back').onclick=main;
   document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
   const form=document.getElementById('credentials-form');
@@ -128,19 +131,17 @@ async function main(){workspace('orders');app.innerHTML='Loading...';try{const [
  }
  async function manualOrderView(){
   workspace('orders');
-  app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div><p>Loading available products...</p>';
+  app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button></div><p>Loading available products...</p>';
   document.getElementById('back').onclick=main;
-  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
   let result;
   try{result=await api('adminProducts',{})}catch(e){app.innerHTML+='<p class="err">Could not load products. Check your connection and try again.</p>';return}
   if(!result.ok){if(result.auth===false)return;app.innerHTML+='<p class="err">'+esc(result.error||'Could not load products.')+'</p>';return}
   const products=result.products.filter(p=>p.active);
   const choices=products.flatMap(p=>p.variants.filter(v=>v.active&&Number(v.stock)>0).map(v=>({id:v.id,label:p.name+' · '+v.label+' · '+money(v.price)+' · '+v.stock+' in stock',stock:Number(v.stock),price:Number(v.price)})));
   const options='<option value="">Choose product / option</option>'+choices.map(v=>'<option value="'+esc(v.id)+'" data-stock="'+v.stock+'" data-price="'+v.price+'">'+esc(v.label)+'</option>').join('');
-  app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div>'+
+  app.innerHTML='<h1>Record WhatsApp order</h1><p class="hint">Enter the customer and items from your WhatsApp conversation. Stock will be reserved, and the order will appear in Orders as unpaid until you record their payment.</p><div class="toolbar"><button id="back">← Back to orders</button></div>'+
    (choices.length?'<form class="o manual-order" id="manual-form"><label>Customer name<input name="name" required minlength="2"></label><label>WhatsApp phone number<input name="phone" type="tel" required placeholder="+233..."></label><label>Email (optional)<input name="email" type="email"></label><label>Fulfilment<select name="method"><option value="delivery">Delivery</option><option value="pickup">Pickup</option></select></label><div id="delivery-fields"><label>Delivery address<input name="address"></label><label>Region / city<input name="region" placeholder="Accra"></label></div><h2 class="section-title">Order items</h2><div id="manual-items"></div><div class="toolbar"><button type="button" id="add-item">Add another item</button></div><label>Notes (optional)<textarea name="notes" maxlength="400" placeholder="Order details from WhatsApp"></textarea></label><p class="hint">Delivery fee is calculated from your Settings sheet. You can record the payment after saving the order.</p><p class="status" id="manual-status" aria-live="polite"></p><button type="submit">Save WhatsApp order</button></form>':'<p>No products with available stock yet. Add a product and set its stock under Manage products first.</p>');
   document.getElementById('back').onclick=main;
-  document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
   const form=document.getElementById('manual-form');if(!form)return;
   const itemList=document.getElementById('manual-items');
   const addItem=()=>{itemList.insertAdjacentHTML('beforeend','<div class="manual-line"><select data-item required>'+options+'</select><input data-qty type="number" min="1" max="20" value="1" required><button type="button" data-remove-item>Remove</button></div>')};
@@ -166,7 +167,54 @@ async function main(){workspace('orders');app.innerHTML='Loading...';try{const [
    finally{button.disabled=false}
   };
  }
- const BADGES=['','New','Limited Edition','Sale','Sold out'];
+async function promotionsView(message=''){
+ workspace('promotions');
+ app.innerHTML='<h1>Promotions</h1><p class="page-intro">Create discount codes for your customers. Codes are checked against dates, minimum spend and usage limits at checkout; the server calculates the final discount.</p><p>Loading promotions…</p>';
+ let result;
+ try{result=await api('adminDiscounts',{})}catch(error){app.innerHTML+='<p class="err">Could not load promotions. Check your connection and try again.</p>';return}
+ if(!result.ok){if(result.auth===false)return;app.innerHTML+='<p class="err">'+esc(result.error||'Could not load promotions.')+'</p>';return}
+ const discounts=result.discounts||[],dateText=value=>value?new Date(value+'T00:00:00').toLocaleDateString():'No date';
+ const valueText=d=>d.type==='percent'?d.value+'% off':money(d.value)+' off';
+ const render=()=>{
+  app.innerHTML='<h1>Promotions</h1><p class="page-intro">Create discount codes for your customers. Codes are checked against dates, minimum spend and usage limits at checkout; the server calculates the final discount.</p>'+
+   (message?'<p class="section-card" role="status">'+esc(message)+'</p>':'')+
+   '<div class="catalog-toolbar"><p class="hint">Paused codes stay in your records and cannot be used at checkout.</p><button id="add-promotion">＋ Create promotion</button></div>'+
+   (discounts.length?'<div class="promotion-grid">'+discounts.map(d=>'<article class="promotion-card"><h2>'+esc(d.code)+'</h2><span class="promotion-state'+(d.active?'':' paused')+'">'+(d.active?'Active':'Paused')+'</span><p><strong>'+esc(valueText(d))+'</strong></p><p>Minimum order: '+money(d.minOrder)+'</p><p>Valid: '+esc(dateText(d.starts))+' – '+esc(dateText(d.expires))+'</p><p>Uses: '+d.used+(d.maxUses?' / '+d.maxUses:' / unlimited')+'</p><div class="promotion-actions"><button type="button" class="secondary" data-edit-promo="'+esc(d.code)+'">Edit</button><button type="button" data-toggle-promo="'+esc(d.code)+'">'+(d.active?'Pause':'Activate')+'</button></div></article>').join('')+'</div>':'<div class="section-card empty">No promotions yet. Create a code when you’re ready to run an offer.</div>')+
+   '<p class="hint">This supports percentage and fixed-amount order discounts. Codes do not automatically apply to all shoppers; customers enter a code at checkout. Pausing a code preserves its use history.</p>'+
+   '<dialog class="promotion-dialog" id="promotion-dialog"><form id="promotion-form"><div class="promotion-dialog-head"><div><h2 id="promotion-title">Create promotion</h2><p class="promotion-help">Set the offer rules and when the code can be redeemed.</p></div><button type="button" class="editor-close" data-close-promo aria-label="Close">×</button></div>'+
+   '<input type="hidden" name="originalCode"><div class="promotion-form"><label>Discount code<input name="code" maxlength="40" pattern="[A-Za-z0-9_\\-]{3,40}" required placeholder="DECEMBER10" autocomplete="off"></label><label>Discount type<select name="type"><option value="percent">Percentage off</option><option value="fixed">Fixed amount off</option></select></label><label><span id="discount-value-label">Percent off</span><input name="value" type="number" min="0.01" step="0.01" required></label><label>Minimum order (GHS)<input name="minOrder" type="number" min="0" step="0.01" value="0" required></label><label>Maximum uses<input name="maxUses" type="number" min="0" step="1" value="0" required><small>Enter 0 for unlimited uses.</small></label><label>Starts on (optional)<input name="starts" type="date"></label><label>Ends on (optional)<input name="expires" type="date"></label><label class="check full"><input name="active" type="checkbox" checked> Active at checkout</label></div>'+
+   '<div class="promotion-submit"><span class="status" role="status" aria-live="polite"></span><div><button type="button" class="secondary" data-close-promo>Cancel</button> <button type="submit">Save promotion</button></div></div></form></dialog>';
+  const dialog=document.getElementById('promotion-dialog'),form=document.getElementById('promotion-form');
+  document.getElementById('add-promotion').onclick=()=>openForm(null);
+  app.onclick=async e=>{
+   if(e.target.closest('[data-close-promo]')){dialog.close();return}
+   const edit=e.target.closest('[data-edit-promo]');
+   if(edit){openForm(discounts.find(d=>d.code===edit.dataset.editPromo));return}
+   const toggle=e.target.closest('[data-toggle-promo]');
+   if(toggle){const d=discounts.find(x=>x.code===toggle.dataset.togglePromo);if(!d)return;toggle.disabled=true;
+    try{const saved=await api('adminSetDiscountActive',{code:d.code,active:!d.active});if(!saved.ok){alert(saved.error||'Could not update promotion.');return}d.active=!d.active;message='Promotion '+d.code+' '+(d.active?'activated.':'paused.');render()}
+    catch(error){alert('Could not update promotion. Check your connection and try again.')}
+    finally{toggle.disabled=false}
+   }
+  };
+  form.elements.type.onchange=()=>{const percent=form.elements.type.value==='percent';document.getElementById('discount-value-label').textContent=percent?'Percent off':'Amount off (GHS)';form.elements.value.max=percent?'100':''};
+  form.onsubmit=async e=>{
+   e.preventDefault();if(!form.reportValidity())return;
+   const button=form.querySelector('[type=submit]'),status=form.querySelector('.status');button.disabled=true;status.textContent='Saving promotion…';
+   try{const result=await api('adminSaveDiscount',{originalCode:form.elements.originalCode.value,code:form.elements.code.value,type:form.elements.type.value,value:form.elements.value.value,minOrder:form.elements.minOrder.value,maxUses:form.elements.maxUses.value,starts:form.elements.starts.value,expires:form.elements.expires.value,active:form.elements.active.checked});
+    if(!result.ok){status.textContent=result.error||'Could not save promotion.';return}
+    dialog.close();promotionsView('Promotion '+result.code+' saved.');
+   }catch(error){status.textContent='Could not save promotion. Check your connection and try again.'}
+   finally{button.disabled=false}
+  };
+  function openForm(d){
+   form.reset();form.elements.originalCode.value=d?d.code:'';form.elements.code.value=d?d.code:'';form.elements.type.value=d?d.type:'percent';form.elements.value.value=d?d.value:'';form.elements.minOrder.value=d?d.minOrder:0;form.elements.maxUses.value=d?d.maxUses:0;form.elements.starts.value=d?d.starts:'';form.elements.expires.value=d?d.expires:'';form.elements.active.checked=d?d.active:true;
+   document.getElementById('promotion-title').textContent=d?'Edit promotion':'Create promotion';form.elements.code.disabled=!!d;form.elements.type.dispatchEvent(new Event('change'));dialog.showModal();form.elements.code.focus();
+  }
+ };
+ render();
+}
+const BADGES=['','New','Limited Edition','Sale','Sold out'];
 function variantRow(v={},removable=false){
  return '<div class="variant" data-variant-id="'+esc(v.id||'')+'">'+
   '<label>Option name<input data-v="label" required maxlength="100" placeholder="One size, Gold, 6 mm" value="'+esc(v.label||'')+'"></label>'+
@@ -186,77 +234,118 @@ function productFields(p={}){
   '<label>Category<input data-category maxlength="100" placeholder="Earrings, Bracelets..." value="'+esc(p.category||'')+'"></label>'+
   '<label>Description<textarea data-description maxlength="2000">'+esc(p.description||'')+'</textarea></label>'+
   '<label>Badge / collection<select data-badge>'+BADGES.map(b=>'<option value="'+esc(b)+'"'+(b===(p.badge||'')?' selected':'')+'>'+(b||'No badge')+'</option>').join('')+'</select></label>'+
-  '<label>Photo URL (optional)<input data-image maxlength="2000" placeholder="https://..." value="'+esc(p.image||'')+'"></label>'+
   '<label class="check"><input data-featured type="checkbox"'+(p.featured?' checked':'')+'> Feature this product</label>'+
-  '<label class="check"><input data-active type="checkbox"'+(p.active===false?'':' checked')+'> Active on storefront</label>';
+  '<label class="check"><input data-active type="checkbox"'+(p.active===false?'':' checked')+'> Visible on storefront</label>';
 }
 async function productsView(message=''){
  workspace('products');
- app.innerHTML='<h1>Products</h1><p class="hint">Create products, set their prices and stock, and upload photos from your device. Each product needs at least one price option (for example, One size or Gold).</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button></div>'+(message?'<p class="status">'+esc(message)+'</p>':'')+'<p>Loading products...</p>';
- document.getElementById('back').onclick=main;
- document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
+ app.innerHTML='<h1>Products</h1><p class="page-intro">Manage the pieces customers see in your storefront. Add a product with its photo, options, price and stock, then preview your catalog here.</p><p>Loading products…</p>';
  let result;
  try{result=await api('adminProducts',{})}catch(e){app.innerHTML+='<p class="err">Could not load products. Check your connection and try again.</p>';return}
  if(!result.ok){if(result.auth===false)return;app.innerHTML+='<p class="err">'+esc(result.error||'Could not load products.')+'</p>';return}
- app.innerHTML='<h1>Products</h1><p class="hint">Create products, set their prices and stock, and upload photos from your device. Each product needs at least one price option (for example, One size or Gold).</p><div class="toolbar"><button id="back">← Back to orders</button><button id="out">Sign out</button><button id="show-create">+ Add a product</button></div>'+(message?'<p class="status">'+esc(message)+'</p>':'')+
-  '<form class="o product" id="create-product" hidden><h2>New product</h2>'+productFields({active:true})+'<h3 class="section-title">Prices and options</h3><div class="variant-list" data-variants>'+variantRow({label:'One size',price:'',cost:0,stock:0,minStock:0,active:true},true)+'</div><div class="toolbar"><button type="button" data-add-variant>Add another option</button><button type="submit">Create product</button></div><small class="status" aria-live="polite"></small></form>'+
-  (result.products.length?'<div class="products" id="products">'+result.products.map(p=>
-   '<form class="o product" data-id="'+esc(p.id)+'"><div class="product-head"><h2>'+esc(p.name||'Unnamed product')+'</h2><small>'+ (p.active?'Active':'Inactive')+'</small></div>'+
-   (p.image?'<img class="preview" alt="'+esc(p.name)+' photo" src="'+esc(p.image)+'">':'<div class="preview"></div>')+productFields(p)+
-   '<label>Upload photo<input data-upload type="file" accept="image/jpeg,image/png,image/webp,image/gif"></label>'+
-   '<h3 class="section-title">Prices and options</h3><div class="variant-list" data-variants">'+(p.variants.length?p.variants.map(v=>variantRow(v,false)).join(''):variantRow({label:'One size',price:'',cost:0,stock:0,minStock:0,active:true},true))+'</div>'+
-   '<div class="toolbar"><button type="button" data-add-variant>Add another option</button><button type="submit">Save product</button></div><small class="status" aria-live="polite"></small></form>'
-  ).join('')+'</div>':'<p>No products yet. Use “Add a product” above to create the first one.</p>');
- document.getElementById('back').onclick=main;
- document.getElementById('out').onclick=()=>{sessionStorage.removeItem('t');T='';loginView()};
- const createForm=document.getElementById('create-product'),products=document.getElementById('products');
- document.getElementById('show-create').onclick=()=>{createForm.hidden=!createForm.hidden;if(!createForm.hidden)createForm.querySelector('[data-name]').focus()};
- app.onclick=e=>{
-  if(e.target.closest('[data-add-variant]')){const form=e.target.closest('form');form.querySelector('[data-variants]').insertAdjacentHTML('beforeend',variantRow({label:'',price:'',cost:0,stock:0,minStock:0,active:true},true));return}
-  if(e.target.closest('[data-remove-variant]')){const list=e.target.closest('[data-variants]');if(list.querySelectorAll('.variant').length>1)e.target.closest('.variant').remove();return}
+ const products=result.products||[];
+ const priceText=p=>{const prices=(p.variants||[]).map(v=>Number(v.price)).filter(Number.isFinite);if(!prices.length)return 'Price not set';const low=Math.min(...prices),high=Math.max(...prices);return low===high?money(low):money(low)+' – '+money(high)};
+ const stockText=p=>(p.variants||[]).filter(v=>v.active).reduce((sum,v)=>sum+(Number(v.stock)||0),0)+' in stock';
+ const cardHtml=p=>'<article class="catalog-card'+(p.active?'':' is-hidden')+'" data-product-card="'+esc(p.id)+'">'+
+  (p.image?'<img class="catalog-image" alt="'+esc(p.name||'Product')+'" src="'+esc(p.image)+'">':'<div class="catalog-image catalog-placeholder">Add a product photo</div>')+
+  '<div class="catalog-info"><h2>'+esc(p.name||'Unnamed product')+'</h2><p class="catalog-meta">'+esc(p.category||'Uncategorized')+(p.badge?' · '+esc(p.badge):'')+'</p>'+
+  '<p class="catalog-price">'+esc(priceText(p))+'</p><p class="catalog-stock">'+esc(stockText(p))+'</p><span class="catalog-status'+(p.active?'':' hidden')+'">'+(p.active?'Visible on storefront':'Hidden from storefront')+'</span>'+
+  '<div class="catalog-actions"><button type="button" data-edit="'+esc(p.id)+'" class="secondary">Edit</button><button type="button" data-toggle="'+esc(p.id)+'">'+(p.active?'Hide':'Show')+'</button></div></div></article>';
+ const categories=[...new Set(products.map(p=>String(p.category||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b));
+ app.innerHTML='<h1>Products</h1><p class="page-intro">Manage your catalog the way customers see it. Upload photos from your device, edit prices and stock, and hide products without losing their order history.</p>'+
+  (message?'<p class="section-card" role="status">'+esc(message)+'</p>':'')+
+  '<div class="catalog-toolbar"><div class="catalog-filters"><input id="catalog-search" type="search" placeholder="Search products" aria-label="Search products"><select id="catalog-category" aria-label="Filter by category"><option value="">All categories</option>'+categories.map(c=>'<option value="'+esc(c)+'">'+esc(c)+'</option>').join('')+'</select><select id="catalog-status" aria-label="Filter by visibility"><option value="all">All products</option><option value="visible">Visible</option><option value="hidden">Hidden</option></select></div><button id="add-product">＋ Add product</button></div>'+
+  '<p class="catalog-count" id="catalog-count"></p><div class="catalog-grid" id="catalog-grid"></div><p class="hint">Hiding a product removes it from the public storefront but keeps its product and sales history in your records. To stop selling an option without deleting its history, edit it and turn off “Available to sell.”</p>'+
+  '<dialog class="product-dialog" id="product-dialog" aria-labelledby="editor-title"><form id="product-form"><div class="product-dialog-inner" id="editor-content"></div></form></dialog>';
+ const grid=document.getElementById('catalog-grid'),dialog=document.getElementById('product-dialog'),form=document.getElementById('product-form');let gallery=[];
+ const renderCatalog=()=>{
+  const query=document.getElementById('catalog-search').value.trim().toLowerCase(),category=document.getElementById('catalog-category').value,status=document.getElementById('catalog-status').value;
+  const matches=products.filter(p=>(!query||[p.name,p.category,p.description].join(' ').toLowerCase().includes(query))&&(!category||p.category===category)&&(status==='all'||(status==='visible')===p.active));
+  document.getElementById('catalog-count').textContent=matches.length+' of '+products.length+' products';
+  grid.innerHTML=matches.length?matches.map(cardHtml).join(''):'<div class="section-card empty">'+(products.length?'No products match these filters.':'No products yet. Add your first product to start building the storefront.')+'</div>';
+  grid.querySelectorAll('img').forEach(img=>img.onerror=()=>{const fallback=document.createElement('div');fallback.className='catalog-image catalog-placeholder';fallback.textContent='Photo unavailable';img.replaceWith(fallback)});
  };
- createForm.onsubmit=async e=>{
-  e.preventDefault();const button=createForm.querySelector('[type=submit]'),status=createForm.querySelector('.status');
-  button.disabled=true;status.textContent='Creating product...';
+ const renderGallery=()=>{
+  const container=form.querySelector('[data-gallery]');if(!container)return;
+  container.innerHTML=gallery.length?gallery.map((image,index)=>'<div class="gallery-photo"><img src="'+esc(image.url)+'" alt="Product photo '+(index+1)+'">'+(index===0?'<p><strong>Cover photo</strong></p>':'<button type="button" class="secondary" data-gallery-cover="'+index+'">Make cover</button>')+
+   (index?'<button type="button" class="secondary" data-gallery-up="'+index+'" aria-label="Move photo '+(index+1)+' earlier">Move earlier</button>':'')+(index<gallery.length-1?'<button type="button" class="secondary" data-gallery-down="'+index+'" aria-label="Move photo '+(index+1)+' later">Move later</button>':'')+
+   '<button type="button" data-gallery-remove="'+index+'">Remove photo</button></div>').join(''):'<p class="hint">No photos yet. Add at least one clear product image to help customers.</p>';
+ };
+ const openEditor=p=>{
+  gallery.forEach(image=>{if(image.file)URL.revokeObjectURL(image.url)});
+  gallery=p&&p.images&&p.images.length?p.images.map((url,index)=>({id:p.imageIds&&p.imageIds[index]||(index?'':'primary'),url:url})):p&&p.image?[{id:'primary',url:p.image}]:[];
+  const variants=p&&p.variants&&p.variants.length?p.variants:[{label:'One size',price:'',cost:0,stock:0,minStock:0,active:true}];
+  const variantHtml=variants.map(v=>variantRow(v,false)).join('');
+  document.getElementById('editor-content').innerHTML='<div class="editor-heading"><div><h2 id="editor-title">'+(p?'Edit product':'Add a product')+'</h2><p>Customers see your product name, photo, description and price on the storefront.</p></div><button type="button" class="editor-close" data-close-editor aria-label="Close">×</button></div>'+
+   '<input type="hidden" data-id value="'+esc(p?p.id:'')+'"><input type="hidden" data-image value="'+esc(p&&p.image||'')+'">'+
+   '<div class="editor-grid"><div class="editor-main">'+productFields(p||{active:true})+'</div><aside class="editor-side"><label>Product photo gallery</label><div class="image-drop"><input data-upload type="file" multiple accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Choose product photos"><p class="hint">Select up to 8 photos. Portrait 4:5 recommended (about 1200 × 1500 px). JPG, PNG, WebP or GIF, up to 5 MB per photo and 6 MB total per product.</p><div class="gallery-editor" data-gallery></div></div></aside></div>'+
+   '<h3 class="section-title">Price, options and stock</h3><p class="hint">Add an option for each size, colour or style you sell. Keep at least one option.</p><div class="variant-list" data-variants>'+variantHtml+'</div><button type="button" class="secondary" data-add-variant>＋ Add another option</button>'+
+   '<div class="editor-footer"><span class="status" role="status" aria-live="polite"></span><div><button type="button" class="secondary" data-close-editor>Cancel</button> <button type="submit">'+(p?'Save changes':'Create product')+'</button></div></div>';
+  dialog.showModal();
+  renderGallery();
+  form.querySelector('[data-name]').focus();
+ };
+ document.getElementById('add-product').onclick=()=>openEditor(null);
+ ['catalog-search','catalog-category','catalog-status'].forEach(id=>document.getElementById(id).addEventListener(id==='catalog-search'?'input':'change',renderCatalog));
+ renderCatalog();
+ app.onclick=async e=>{
+  if(e.target.closest('[data-close-editor]')){dialog.close();return}
+  const removePhoto=e.target.closest('[data-gallery-remove]'),coverPhoto=e.target.closest('[data-gallery-cover]'),upPhoto=e.target.closest('[data-gallery-up]'),downPhoto=e.target.closest('[data-gallery-down]');
+  if(removePhoto){const removed=gallery.splice(Number(removePhoto.dataset.galleryRemove),1)[0];if(removed&&removed.file)URL.revokeObjectURL(removed.url);renderGallery();return}
+  if(coverPhoto){const [cover]=gallery.splice(Number(coverPhoto.dataset.galleryCover),1);gallery.unshift(cover);renderGallery();return}
+  if(upPhoto){const index=Number(upPhoto.dataset.galleryUp);[gallery[index-1],gallery[index]]=[gallery[index],gallery[index-1]];renderGallery();return}
+  if(downPhoto){const index=Number(downPhoto.dataset.galleryDown);[gallery[index+1],gallery[index]]=[gallery[index],gallery[index+1]];renderGallery();return}
+  if(e.target.closest('[data-add-variant]')){form.querySelector('[data-variants]').insertAdjacentHTML('beforeend',variantRow({label:'',price:'',cost:0,stock:0,minStock:0,active:true},true));return}
+  if(e.target.closest('[data-remove-variant]')){const list=form.querySelector('[data-variants]');if(list.querySelectorAll('.variant').length>1)e.target.closest('.variant').remove();return}
+  const edit=e.target.closest('[data-edit]');
+  if(edit){openEditor(products.find(p=>p.id===edit.dataset.edit));return}
+  const toggle=e.target.closest('[data-toggle]');
+  if(toggle){
+   const product=products.find(p=>p.id===toggle.dataset.toggle);if(!product)return;
+   const active=!product.active;
+   if(active&&!confirm('Show “'+product.name+'” on the public storefront?'))return;
+   if(!active&&!confirm('Hide “'+product.name+'” from the public storefront? Existing order history will be kept.'))return;
+   toggle.disabled=true;
+   try{const saved=await api('adminSetProductActive',{productId:product.id,active:active});if(!saved.ok){alert(saved.error||'Could not update product visibility.');return}product.active=active;renderCatalog()}
+   catch(error){alert('Could not update product visibility. Check your connection and try again.')}
+   finally{toggle.disabled=false}
+  }
+ };
+ form.onchange=e=>{
+  if(!e.target.matches('[data-upload]'))return;
+  const files=[...e.target.files];e.target.value='';
+  if(gallery.length+files.length>8){alert('A product can have up to 8 photos.');return}
+  if(files.some(file=>file.size>5*1024*1024)){alert('Each photo must be 5 MB or smaller.');return}
+  if(files.some(file=>!['image/jpeg','image/png','image/webp','image/gif'].includes(file.type))){alert('Choose JPG, PNG, WebP or GIF photos.');return}
+  if(gallery.reduce((sum,image)=>sum+(image.file?image.file.size:0),0)+files.reduce((sum,file)=>sum+file.size,0)>6*1024*1024){alert('Photos must total 6 MB or less per product. Remove a photo or choose smaller files.');return}
+  files.forEach(file=>gallery.push({id:'',url:URL.createObjectURL(file),file:file}));renderGallery();
+ };
+ form.onsubmit=async e=>{
+  e.preventDefault();if(!form.reportValidity())return;
+  const button=form.querySelector('[type=submit]'),status=form.querySelector('.status'),id=form.querySelector('[data-id]').value;
+  button.disabled=true;status.textContent='Saving product and photos…';
   try{
-   const created=await api('adminCreateProduct',{name:createForm.querySelector('[data-name]').value,category:createForm.querySelector('[data-category]').value,description:createForm.querySelector('[data-description]').value,badge:createForm.querySelector('[data-badge]').value,imageUrl:createForm.querySelector('[data-image]').value,featured:createForm.querySelector('[data-featured]').checked,active:createForm.querySelector('[data-active]').checked,variants:readVariants(createForm)});
-   if(!created.ok){status.textContent=created.error||'Could not create product.';return}
-   productsView('Product created. Upload a photo or edit its details below.');
-  }catch(error){status.textContent='Could not create product. Check your connection and try again.'}
+   const payload={productId:id,name:form.querySelector('[data-name]').value,category:form.querySelector('[data-category]').value,description:form.querySelector('[data-description]').value,badge:form.querySelector('[data-badge]').value,imageUrl:id?(products.find(p=>p.id===id)||{}).image||'':'',featured:form.querySelector('[data-featured]').checked,active:form.querySelector('[data-active]').checked,variants:readVariants(form)};
+   let saved;
+   if(id){
+    saved=await api('adminUpdateProduct',payload);if(!saved.ok){status.textContent=saved.error||'Could not save product.';return}
+    const variants=await api('adminUpdateVariants',{productId:id,variants:payload.variants});
+    if(!variants.ok){dialog.close();productsView('Product details were saved, but prices and stock were not: '+(variants.error||'please retry.'));return}
+   }else{
+    saved=await api('adminCreateProduct',payload);if(!saved.ok){status.textContent=saved.error||'Could not create product.';return}
+   }
+   const productId=id||saved.productId;
+   const images=[];
+   for(const image of gallery){
+    if(image.file){const data=String(await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onload=()=>resolve(reader.result);reader.onerror=()=>reject(new Error('Could not read the selected photo.'));reader.readAsDataURL(image.file)})).split(',')[1]||'';images.push({data:data,fileName:image.file.name,mimeType:image.file.type})}
+    else images.push({id:image.id});
+   }
+   const galleryResult=await api('adminSaveProductGallery',{productId:productId,images:images});
+   if(!galleryResult.ok){dialog.close();productsView('Product details were saved, but photos were not: '+(galleryResult.error||'please retry.'));return}
+   dialog.close();productsView(id?'Product changes saved.':'Product created and ready for the storefront.');
+  }catch(error){status.textContent='Could not save the product. Check your connection and try again.'}
   finally{button.disabled=false}
  };
- const handleUpload=async input=>{
-  const file=input.files[0];if(!file)return;
-  const card=input.closest('form'),status=card.querySelector('.status');
-  if(file.size>5*1024*1024){status.textContent='Image must be 5 MB or smaller.';input.value='';return}
-  status.textContent='Uploading photo...';
-  const reader=new FileReader();
-  reader.onload=async()=>{
-   try{
-    const uploaded=await api('adminUploadImage',{productId:card.dataset.id,fileName:file.name,mimeType:file.type,data:String(reader.result).split(',')[1]||''});
-    if(!uploaded.ok){status.textContent=uploaded.error||'Upload failed.';return}
-    card.querySelector('[data-image]').value=uploaded.image;
-    let preview=card.querySelector('.preview');
-    if(preview.tagName!=='IMG'){const image=document.createElement('img');image.className='preview';image.alt=card.querySelector('[data-name]').value+' photo';preview.replaceWith(image);preview=image}
-    preview.src=uploaded.image;status.textContent='Photo uploaded and saved.';
-   }catch(error){status.textContent='Upload failed. Check your connection and try again.'}
-  };
-  reader.onerror=()=>{status.textContent='Could not read this photo.'};
-  reader.readAsDataURL(file);
- };
- app.onchange=e=>{if(e.target.matches('[data-upload]'))handleUpload(e.target)};
- const saveProduct=async(form)=>{
-  const button=form.querySelector('[type=submit]'),status=form.querySelector('.status'),id=form.dataset.id;
-  button.disabled=true;status.textContent='Saving product...';
-  try{
-   const saved=await api('adminUpdateProduct',{productId:id,name:form.querySelector('[data-name]').value,category:form.querySelector('[data-category]').value,description:form.querySelector('[data-description]').value,badge:form.querySelector('[data-badge]').value,imageUrl:form.querySelector('[data-image]').value,featured:form.querySelector('[data-featured]').checked,active:form.querySelector('[data-active]').checked});
-   if(!saved.ok){status.textContent=saved.error||'Could not save product details.';return}
-   const variants=await api('adminUpdateVariants',{productId:id,variants:readVariants(form)});
-   status.textContent=variants.ok?'Product details, prices and stock saved.':(variants.error||'Product details saved, but prices and stock could not be saved.');
-  }catch(error){status.textContent='Could not save changes. Check your connection and try again.'}
-  finally{button.disabled=false}
- };
- app.onsubmit=e=>{if(e.target===createForm)return;const form=e.target.closest('#products form');if(form){e.preventDefault();saveProduct(form)}};
 }
 if(!CFG.API_URL)app.textContent='Set API_URL in config.js first.';else T?dashboardView():loginView();
 </script></body></html>
