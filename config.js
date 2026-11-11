@@ -1,5 +1,5 @@
 // Paste your deployed Apps Script web app URL. No secrets belong in this file.
 window.CFG = {
-  API_URL: "https://script.google.com/macros/s/AKfycbwF0qRL_0-qvQzOHdQWzM0HmIppU9aQfAAGYe0euKGcHnvaEc990QD-wAuBtgop34Ox4w/exec",
+  API_URL: "https://script.google.com/macros/s/AKfycbzWfIQa0m0RbDqKqDmPoUPS1P9ALDPAxBZWaXbzxlUjsZAW2wDmdnkYaqNi-cOOqST5pQ/exec",
   WHATSAPP_NUMBER: "233596117844"
 };
