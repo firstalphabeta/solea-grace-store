@@ -205,8 +205,8 @@ function inCategory(p,c){if(!c)return true;const key=String(c).trim().toLowerCas
 function render(){const q=$('#q').value.toLowerCase(),c=$('#cat').value,s=$('#sort').value;
  let l=CAT.products.filter(p=>p.variants.length&&inCategory(p,c)&&p.name.toLowerCase().includes(q));
  if(s)l.sort((a,b)=>s==='lo'?from(a)-from(b):from(b)-from(a));
- const g=$('#grid');g.replaceChildren(...l.map(p=>h('button',{class:'card',onclick:()=>openProduct(p)},h('div',{class:'card-media'},h('div',{class:'ph'},p.image?h('img',{src:p.image,alt:p.name,loading:'lazy'}):'Photo coming soon'),p.badge?h('span',{class:'product-badge'},p.badge):''),h('h3',{},p.name),h('div',{class:'price'},'From '+money(from(p)),p.variants[0].compareAtPrice?h('span',{class:'old-price'},money(p.variants[0].compareAtPrice)):''))));
- const e=$('#empty');e.hidden=!!l.length;e.textContent=!CFG.API_URL?'Set API_URL in config.js to load products.':CAT.products.length?'No pieces match your search.':'No products yet. Add products and variants in the Google Sheet.'}
+ const g=$('#grid');g.replaceChildren(...l.map(p=>h('button',{class:'card',onclick:()=>openProduct(p)},h('div',{class:'card-media'},h('div',{class:'ph'},p.image?h('img',{src:p.image,alt:p.name,loading:'lazy'}):''),p.badge?h('span',{class:'product-badge'},p.badge):''),h('h3',{},p.name),h('div',{class:'price'},'From '+money(from(p)),p.variants[0].compareAtPrice?h('span',{class:'old-price'},money(p.variants[0].compareAtPrice)):''))));
+ const e=$('#empty');e.hidden=!!l.length||!CAT.products.length;e.textContent='No pieces match your search.'}
 function panel(...k){$('#panel').classList.remove('checkout-panel');$('#panel').replaceChildren(h('button',{class:'btn alt',onclick:close},'Close'),...k.flat(Infinity));$('#panel').classList.add('open');$('#shade').classList.add('open')}
 function close(){$('#panel').classList.remove('open','checkout-panel');$('#shade').classList.remove('open')}
 function openProduct(p){let sel=null,qty=1;const info=h('div',{class:'price'},'Choose an option'),err=h('div',{class:'err'}),images=p.images&&p.images.length?p.images:(p.image?[p.image]:[]),hero=h('div',{class:'product-gallery-main'},images.length?h('img',{src:images[0],alt:p.name}):'Photo coming soon');
@@ -260,14 +260,27 @@ menuShade.onclick=()=>setMenuOpen(false);
 document.addEventListener('click',e=>{if(mainNav.classList.contains('open')&&!e.target.closest('#mainNav')&&!e.target.closest('#menuToggle'))setMenuOpen(false)});
 mainNav.addEventListener('click',e=>{if(e.target.closest('a'))setMenuOpen(false)});
 document.addEventListener('keydown',e=>{if(e.key==='Escape')setMenuOpen(false)});
-const slides=[...document.querySelectorAll('.carousel-slide')],dots=[...document.querySelectorAll('.carousel-dot')];let activeSlide=0;
-function showSlide(index){activeSlide=(index+slides.length)%slides.length;slides.forEach((slide,i)=>{const active=i===activeSlide,stack=(i-activeSlide+slides.length)%slides.length;slide.classList.toggle('active',active);slide.dataset.stack=String(stack);slide.setAttribute('aria-hidden',String(!active));slide.inert=!active});dots.forEach((dot,i)=>dot.setAttribute('aria-current',String(i===activeSlide)))}
+const carousel=$('.carousel'),carouselSection=$('.carousel-section'),dotsContainer=$('.carousel-dots');let slides=[...carousel.querySelectorAll('.carousel-slide')],dots=[...dotsContainer.querySelectorAll('.carousel-dot')],activeSlide=0;
+function showSlide(index){if(!slides.length)return;activeSlide=(index+slides.length)%slides.length;slides.forEach((slide,i)=>{const active=i===activeSlide,stack=(i-activeSlide+slides.length)%slides.length;slide.classList.toggle('active',active);slide.dataset.stack=String(stack);slide.setAttribute('aria-hidden',String(!active));slide.inert=!active});dots.forEach((dot,i)=>dot.setAttribute('aria-current',String(i===activeSlide)))}
+function renderStories(stories){
+ if(!Array.isArray(stories))return;
+ if(!stories.length){carouselSection.hidden=true;slides=[];dots=[];updateRotation();return}
+ carouselSection.hidden=false;
+ carousel.replaceChildren(...stories.map((story,index)=>h('article',{class:'carousel-slide','aria-roledescription':'slide','aria-label':(index+1)+' of '+stories.length},
+  h('img',{src:story.image,alt:story.imageAlt||story.title,loading:'lazy'}),
+  h('div',{class:'carousel-copy'},h('p',{class:'eyebrow'},story.eyebrow),h('h3',{},story.title),h('p',{},story.description),h('a',{class:'btn alt',href:story.buttonUrl},story.buttonLabel))
+ )));
+ dotsContainer.replaceChildren(...stories.map((story,index)=>h('button',{class:'carousel-dot',type:'button','aria-label':'Show story '+(index+1),'aria-current':index===0?'true':'false'})));
+ slides=[...carousel.querySelectorAll('.carousel-slide')];dots=[...dotsContainer.querySelectorAll('.carousel-dot')];activeSlide=0;showSlide(activeSlide);
+ dots.forEach((dot,index)=>dot.addEventListener('click',()=>{showSlide(index);updateRotation()}));
+ updateRotation();
+}
 showSlide(activeSlide);
-const carousel=$('.carousel');let touchStartX=null;
+let touchStartX=null;
 carousel.addEventListener('touchstart',e=>{touchStartX=e.changedTouches[0].screenX},{passive:true});
 carousel.addEventListener('touchend',e=>{if(touchStartX===null)return;const delta=e.changedTouches[0].screenX-touchStartX;if(Math.abs(delta)>50)showSlide(activeSlide+(delta<0?1:-1));touchStartX=null},{passive:true});
 const reducedMotion=window.matchMedia('(prefers-reduced-motion: reduce)'),slidePause=$('#slidePause');let rotationPaused=reducedMotion.matches,rotationTimer=null,carouselHovered=false,carouselFocused=false;
-function updateRotation(){clearInterval(rotationTimer);rotationTimer=null;slidePause.textContent=rotationPaused?'Play':'Pause';slidePause.setAttribute('aria-label',rotationPaused?'Play automatic slides':'Pause automatic slides');if(!rotationPaused&&!carouselHovered&&!carouselFocused&&!document.hidden)rotationTimer=setInterval(()=>showSlide(activeSlide+1),4000)}
+function updateRotation(){clearInterval(rotationTimer);rotationTimer=null;slidePause.textContent=rotationPaused?'Play':'Pause';slidePause.setAttribute('aria-label',rotationPaused?'Play automatic slides':'Pause automatic slides');if(slides.length&&!carouselSection.hidden&&!rotationPaused&&!carouselHovered&&!carouselFocused&&!document.hidden)rotationTimer=setInterval(()=>showSlide(activeSlide+1),4000)}
 slidePause.onclick=()=>{rotationPaused=!rotationPaused;updateRotation()};
 $('#slidePrev').addEventListener('click',()=>{showSlide(activeSlide-1);updateRotation()});
 $('#slideNext').addEventListener('click',()=>{showSlide(activeSlide+1);updateRotation()});
@@ -296,6 +309,7 @@ $('#cf').onsubmit=async e=>{
 (async()=>{save();updateWhatsapp();if(!CFG.API_URL){CAT=DEMO_CATALOG;$('#previewNote').style.display='block';fillCategories();render();return}
  try{CAT=await (await fetch(CFG.API_URL)).json()}catch(e){$('#empty').hidden=false;$('#empty').textContent='Could not load products. Check your internet connection and try again.';return}
  $('#brand').textContent=CAT.settings.business_name||'Soléa Grace';if(CAT.settings.business_name)document.title=CAT.settings.business_name+' | Faith-inspired artisan jewellery';
+ if(Array.isArray(CAT.stories))renderStories(CAT.stories);
  fillCategories();
  updateWhatsapp();render()})();
 </script></body></html>

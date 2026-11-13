@@ -20,6 +20,14 @@ When updating an existing deployment, use **Deploy > Manage deployments > Edit >
 4. Choose **Create product** to save the details and photos together. Images are stored in the script owner's Drive and shared with anyone who has the link so they can appear on the public storefront.
 5. Use the searchable catalog to preview, edit, or hide/show products. Hidden products do not appear in the storefront, but their order history stays intact. Choose **New** or **Limited Edition** under **Badge / collection** for storefront badges. To create two test items, use **Add product** for each item; each can be edited or hidden later.
 
+### Updating “A little inspiration”
+1. Sign in at `/admin.html` and open **Featured stories**.
+2. Choose **Add featured story** for a promotion, seasonal sale, or collection announcement, or choose **Edit** on an existing card.
+3. Add a short label, headline, description, publicly accessible HTTPS image URL and image description. Set the button text and a destination such as `#shop` or `#custom`, then choose its display order.
+4. Save the story. It appears in the storefront carousel while **Show on storefront** is checked. Choose **Pause** to hide a story without losing it; activate it again when you want it back.
+
+When adding this feature to an existing store, paste the latest `apps-script/Code.gs` into Apps Script, run `setup()` once to create the **Featured_Stories** sheet, then deploy a new web app version and publish the latest `web/` files. The setup adds the three starter stories only if the new sheet is empty; it does not overwrite your stories on later runs.
+
 ### Promotions and discount codes
 1. In the admin workspace, open **Promotions** and choose **Create promotion**.
 2. Set a unique code, percentage or fixed-amount discount, minimum order, optional maximum uses, optional start/end dates, and whether it is active. A maximum of `0` means unlimited uses; leaving dates blank means no date restriction.
