@@ -23,10 +23,10 @@ When updating an existing deployment, use **Deploy > Manage deployments > Edit >
 ### Updating “A little inspiration”
 1. Sign in at `/admin.html` and open **Featured stories**.
 2. Choose **Add featured story** for a promotion, seasonal sale, or collection announcement, or choose **Edit** on an existing card.
-3. Add a short label, headline, description, publicly accessible HTTPS image URL and image description. Set the button text and a destination such as `#shop` or `#custom`, then choose its display order.
+3. Add a short label, headline and description. Upload a JPG, PNG, WebP or GIF photo up to 5 MB from your device, or paste a publicly accessible HTTPS image URL. Add an image description, button text and destination such as `#shop` or `#custom`, then choose its display order.
 4. Save the story. It appears in the storefront carousel while **Show on storefront** is checked. Choose **Pause** to hide a story without losing it; activate it again when you want it back.
 
-When adding this feature to an existing store, paste the latest `apps-script/Code.gs` into Apps Script, run `setup()` once to create the **Featured_Stories** sheet, then deploy a new web app version and publish the latest `web/` files. The setup adds the three starter stories only if the new sheet is empty; it does not overwrite your stories on later runs.
+Uploads are stored in the script owner's Drive and shared by link. If image uploads are not already authorized, run `authorizeImageUploads()` once from Apps Script and approve Drive access. When adding this feature to an existing store, paste the latest `apps-script/Code.gs` into Apps Script, run `setup()` once to create the **Featured_Stories** sheet, then deploy a new web app version and publish the latest `web/` files. The setup adds the three starter stories only if the new sheet is empty; it does not overwrite your stories on later runs.
 
 ### Promotions and discount codes
 1. In the admin workspace, open **Promotions** and choose **Create promotion**.
@@ -72,6 +72,7 @@ GitHub Pages hosts the public storefront only; it does not run the Apps Script b
 - Every status/payment change is written to **Order_History**.
 - Revenue excludes Cancelled/Returned orders; cash received comes only from recorded payments; profit figures are estimates.
 - The **Dashboard** tab summarizes sales, payments, outstanding balance, estimated profit, orders, customers, custom requests, low stock and inventory cost. It includes monthly sales, order-status and best-seller charts, and refreshes after website/admin writes or manual edits to data tabs. The original data remains in its individual tabs (Orders, Order_Items, Payments, Customers, Custom_Orders, Expenses, inventory and product tabs).
+- The admin business overview refreshes from the sheet every 60 seconds while open and suggests next steps based on the selected period's orders, outstanding payments, open custom requests and low stock. These are operational prompts, not forecasts or live visitor analytics.
 - The web admin workspace includes an overview with date filters (up to 31 days for the daily chart), recent orders, top sellers and low-stock alerts; searchable/order-management tools; product and customer lists; promotion management; custom request status tracking; and expense entry/history. Deploy the latest `apps-script/Code.gs` to Apps Script before these features can load their data.
 - Dashboard numbers are based on recorded store data, not website visits or conversion rates. Those require a separate web-analytics integration and visitor consent setup.
 
